@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>William Horne — Portfolio</title>
+
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --text-primary: #f2f2f2;
+      --text-secondary: #b8b8b8;
+      --card-bg: #111;
+      --border-subtle: rgba(255,255,255,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Inter, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--text-primary);
+    }
+
+    header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 32px 48px;
+    }
+
+    .identity {
+      text-align: right;
+      font-size: 0.95rem;
+    }
+
+    .identity .name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 80px auto 120px;
+      padding: 0 48px;
+    }
+
+    h1 {
+      font-weight: 400;
+      font-size: 2.2rem;
+      margin-bottom: 56px;
+      color: var(--text-primary);
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 48px;
+    }
+
+    .project {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .project:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .project a {
+      display: block;
+    }
+
+    .project img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      display: block;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .project h2 {
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin: 0 0 8px;
+      color: var(--text-primary);
+    }
+
+    .project p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 24px;
+      }
+
+      main {
+        padding: 0 24px;
+        margin-top: 48px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="identity">
+      <div class="name">William Horne</div>
+      <div>
+        <a href="https://www.linkedin.com/in/your-linkedin-handle" target="_blank" rel="noopener">
+          linkedin.com/in/your-linkedin-handle
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>A few things I've been working on</h1>
+
+    <section class="projects">
+      <article class="project">
+        <a href="pentagong.html">
+          <img src="pentagong.png" alt="Pentagong screenshot" loading="lazy" />
+        </a>
+        <h2>Pentagong</h2>
+        <p>
+          A compact experiment focused on structure and repetition,
+          built gradually and refined through play.
+        </p>
+      </article>
+
+      <article class="project">
+        <a href="vent.html">
+          <img src="vent.png" alt="Vent screenshot" loading="lazy" />
+        </a>
+        <h2>Vent</h2>
+        <p>
+          A small tool created to explore tone and constraint,
+          keeping the interface intentionally minimal.
+        </p>
+      </article>
+
+      <article class="project">
+        <a href="antonyandcleopatra.html">
+          <img src="antonyandcleopatra.png" alt="Antony and Cleopatra screenshot" loading="lazy" />
+        </a>
+        <h2>Antony & Cleopatra</h2>
+        <p>
+          A narrative‑driven experiment balancing text, pacing,
+          and presentation with a light touch.
+        </p>
+      </article>
+
+      <article class="project">
+        <a href="cassius.html">
+          <img src="cassius.png" alt="Cassius screenshot" loading="lazy" />
+        </a>
+        <h2>Cassius</h2>
+        <p>
+          A quiet side project emphasizing detail and rhythm,
+          shaped through iteration rather than urgency.
+        </p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
