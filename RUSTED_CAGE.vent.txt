@@ -1,0 +1,95 @@
+VENT PATCH FILE
+===============
+Name: RUSTED CAGE
+BPM: 110
+Master Volume: 70
+
+[SLOT 1: CLANG]
+  Pitch: 140.00
+  HPF: 20.00
+  Decay: 1800.00
+  Repeat: 0.50
+  Random: 60.00
+  >Delay: 10.00
+  >Verb: 30.00
+  Volume: 25.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 2: RATTLE]
+  Pitch: 280.00
+  HPF: 400.00
+  Decay: 200.00
+  Repeat: 5.00
+  Random: 65.00
+  >Delay: 10.00
+  >Verb: 20.00
+  Volume: 18.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 3: SCRAPE]
+  Pitch: 240.00
+  HPF: 300.00
+  Sweep: 1.20
+  Q: 16.00
+  Random: 55.00
+  >Delay: 10.00
+  >Verb: 25.00
+  Volume: 16.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 4: GEAR]
+  Pitch: 160.00
+  HPF: 100.00
+  Grit: 45.00
+  Decay: 220.00
+  Repeat: 4.00
+  >Delay: 10.00
+  >Verb: 20.00
+  Volume: 14.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 5: RUMBLE]
+  Pitch: 60.00
+  LPF: 20000.00
+  Mod Freq: 1.00
+  Mod Wave: 0.00
+  Mod Depth: 10.00
+  >Delay: 10.00
+  >Verb: 10.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 6: HUM]
+  Pitch: 60.00
+  LPF: 20000.00
+  Mod Freq: 1.00
+  Mod Wave: 0.00
+  Mod Depth: 10.00
+  >Delay: 10.00
+  >Verb: 10.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[DELAY]
+  Tap 1: note=1/4 feedback=30 pan=-60 vol=40 reverbSend=20
+  Tap 2: note=1/8 feedback=25 pan=60 vol=30 reverbSend=20
+  Tap 3: note=d1/8 feedback=20 pan=-30 vol=25 reverbSend=20
+  Tap 4: note=1/16 feedback=15 pan=30 vol=20 reverbSend=20
+
+[REVERB]
+  Mode: warehouse
+  Depth: 55
+  Size: 900ms
+  Mod: 1.00Hz
+  Mod Depth: 15
+  Volume: 48
+
+<<JSON>>
+{"name":"RUSTED CAGE","version":2,"bpm":110,"masterVol":0.7,"slotTypes":["clang","rattle","scrape","gear","rumble","hum"],"generators":{"slot1":{"type":"clang","bpmSync":false,"syncNoteIdx":7,"pitch":140,"decay":1800,"repeatFreq":0.5,"randomize":60,"sendVerb":30,"volume":25,"hpf":20,"sendDelay":10},"slot2":{"type":"rattle","bpmSync":false,"syncNoteIdx":7,"pitch":280,"decay":200,"repeatFreq":5,"randomize":65,"sendVerb":20,"volume":18,"hpf":400,"sendDelay":10},"slot3":{"type":"scrape","bpmSync":false,"syncNoteIdx":7,"pitch":240,"sweepRate":1.2,"filterQ":16,"randomize":55,"sendVerb":25,"volume":16,"hpf":300,"sendDelay":10},"slot4":{"type":"gear","bpmSync":false,"syncNoteIdx":7,"pitch":160,"grit":45,"decay":220,"repeatFreq":4,"sendVerb":20,"volume":14,"hpf":100,"sendDelay":10},"slot5":{"type":"rumble","bpmSync":false,"syncNoteIdx":7,"volume":0,"pitch":60,"lpf":20000,"modFreq":1,"modWave":0,"modDepth":10,"sendDelay":10,"sendVerb":10},"slot6":{"type":"hum","bpmSync":false,"syncNoteIdx":7,"volume":0,"pitch":60,"lpf":20000,"modFreq":1,"modWave":0,"modDepth":10,"sendDelay":10,"sendVerb":10}},"delay":[{"note":"1/4","feedback":30,"pan":-60,"vol":40,"reverbSend":20},{"note":"1/8","feedback":25,"pan":60,"vol":30,"reverbSend":20},{"note":"d1/8","feedback":20,"pan":-30,"vol":25,"reverbSend":20},{"note":"1/16","feedback":15,"pan":30,"vol":20,"reverbSend":20}],"reverb":{"mode":"warehouse","depth":55,"size":900,"mod":1.0,"modDepth":15,"vol":48},"recording":null}
+<<END>>

@@ -1,0 +1,95 @@
+VENT PATCH FILE
+===============
+Name: BURIED TEMPLE
+BPM: 50
+Master Volume: 70
+
+[SLOT 1: BELL]
+  Pitch: 55.00
+  HPF: 20.00
+  Decay: 10000.00
+  Repeat: 0.04
+  Harmonic: 5.00
+  >Delay: 10.00
+  >Verb: 85.00
+  Volume: 28.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 2: GHOST]
+  Pitch: 220.00
+  HPF: 20.00
+  Mod Freq: 0.10
+  Mod Depth: 20.00
+  Random: 40.00
+  >Delay: 10.00
+  >Verb: 75.00
+  Volume: 22.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 3: DRONE]
+  Pitch: 82.00
+  LPF: 1800.00
+  Detune: 25.00
+  Mod Rate: 0.06
+  Mod Dep: 20.00
+  >Delay: 10.00
+  >Verb: 65.00
+  Volume: 22.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 4: HUM]
+  Pitch: 55.00
+  LPF: 800.00
+  Mod Freq: 0.30
+  Mod Wave: 0.00
+  Mod Depth: 15.00
+  >Delay: 10.00
+  >Verb: 45.00
+  Volume: 14.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 5: DRIP]
+  Pitch: 880.00
+  HPF: 500.00
+  Decay: 600.00
+  Repeat: 0.10
+  Wetness: 55.00
+  >Delay: 10.00
+  >Verb: 80.00
+  Volume: 12.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 6: WIND]
+  Intensity: 50.00
+  Center: 800.00
+  Gust Rate: 0.40
+  Gust Dep: 50.00
+  Turbul: 30.00
+  >Delay: 10.00
+  >Verb: 20.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[DELAY]
+  Tap 1: note=1/4 feedback=30 pan=-60 vol=40 reverbSend=20
+  Tap 2: note=1/8 feedback=25 pan=60 vol=30 reverbSend=20
+  Tap 3: note=d1/8 feedback=20 pan=-30 vol=25 reverbSend=20
+  Tap 4: note=1/16 feedback=15 pan=30 vol=20 reverbSend=20
+
+[REVERB]
+  Mode: mine
+  Depth: 90
+  Size: 6000ms
+  Mod: 0.20Hz
+  Mod Depth: 45
+  Volume: 80
+
+<<JSON>>
+{"name":"BURIED TEMPLE","version":2,"bpm":50,"masterVol":0.7,"slotTypes":["bell","ghost","drone","hum","drip","wind"],"generators":{"slot1":{"type":"bell","bpmSync":false,"syncNoteIdx":7,"pitch":55,"decay":10000,"repeatFreq":0.04,"harmonicity":5,"sendVerb":85,"volume":28,"hpf":20,"sendDelay":10},"slot2":{"type":"ghost","bpmSync":false,"syncNoteIdx":7,"pitch":220,"modFreq":0.1,"modDepth":20,"randomize":40,"sendVerb":75,"volume":22,"hpf":20,"sendDelay":10},"slot3":{"type":"drone","bpmSync":false,"syncNoteIdx":7,"pitch":82,"lpf":1800,"detune":25,"modFreq":0.06,"modDepth":20,"sendVerb":65,"volume":22,"sendDelay":10},"slot4":{"type":"hum","bpmSync":false,"syncNoteIdx":7,"pitch":55,"lpf":800,"modFreq":0.3,"modWave":0,"modDepth":15,"sendVerb":45,"volume":14,"sendDelay":10},"slot5":{"type":"drip","bpmSync":false,"syncNoteIdx":7,"pitch":880,"decay":600,"repeatFreq":0.1,"wetness":55,"hpf":500,"sendVerb":80,"volume":12,"sendDelay":10},"slot6":{"type":"wind","bpmSync":false,"syncNoteIdx":7,"volume":0,"intensity":50,"bpCenter":800,"gustRate":0.4,"gustDepth":50,"turbulence":30,"sendDelay":10,"sendVerb":20}},"delay":[{"note":"1/4","feedback":30,"pan":-60,"vol":40,"reverbSend":20},{"note":"1/8","feedback":25,"pan":60,"vol":30,"reverbSend":20},{"note":"d1/8","feedback":20,"pan":-30,"vol":25,"reverbSend":20},{"note":"1/16","feedback":15,"pan":30,"vol":20,"reverbSend":20}],"reverb":{"mode":"mine","depth":90,"size":6000,"mod":0.2,"modDepth":45,"vol":80},"recording":null}
+<<END>>

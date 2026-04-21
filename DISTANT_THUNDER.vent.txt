@@ -1,0 +1,95 @@
+VENT PATCH FILE
+===============
+Name: DISTANT THUNDER
+BPM: 65
+Master Volume: 70
+
+[SLOT 1: RUMBLE]
+  Pitch: 30.00
+  LPF: 250.00
+  Mod Freq: 0.15
+  Mod Wave: 0.00
+  Mod Depth: 50.00
+  >Delay: 10.00
+  >Verb: 55.00
+  Volume: 40.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 2: WIND]
+  Intensity: 45.00
+  Center: 500.00
+  Gust Rate: 0.15
+  Gust Dep: 75.00
+  Turbul: 30.00
+  >Delay: 10.00
+  >Verb: 50.00
+  Volume: 20.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 3: CLANG]
+  Pitch: 45.00
+  HPF: 20.00
+  Decay: 6000.00
+  Repeat: 0.03
+  Random: 60.00
+  >Delay: 10.00
+  >Verb: 55.00
+  Volume: 22.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 4: DRONE]
+  Pitch: 55.00
+  LPF: 1500.00
+  Detune: 30.00
+  Mod Rate: 0.10
+  Mod Dep: 15.00
+  >Delay: 10.00
+  >Verb: 45.00
+  Volume: 15.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 5: STEAM]
+  Attack: 300.00
+  HPF: 20.00
+  Decay: 800.00
+  Repeat: 0.30
+  Sustain: 300.00
+  >Delay: 10.00
+  >Verb: 10.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 6: GHOST]
+  Pitch: 440.00
+  HPF: 20.00
+  Mod Freq: 0.30
+  Mod Depth: 15.00
+  Random: 10.00
+  >Delay: 10.00
+  >Verb: 10.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[DELAY]
+  Tap 1: note=1/4 feedback=30 pan=-60 vol=40 reverbSend=20
+  Tap 2: note=1/8 feedback=25 pan=60 vol=30 reverbSend=20
+  Tap 3: note=d1/8 feedback=20 pan=-30 vol=25 reverbSend=20
+  Tap 4: note=1/16 feedback=15 pan=30 vol=20 reverbSend=20
+
+[REVERB]
+  Mode: mine
+  Depth: 80
+  Size: 5000ms
+  Mod: 0.20Hz
+  Mod Depth: 40
+  Volume: 70
+
+<<JSON>>
+{"name":"DISTANT THUNDER","version":2,"bpm":65,"masterVol":0.7,"slotTypes":["rumble","wind","clang","drone","steam","ghost"],"generators":{"slot1":{"type":"rumble","bpmSync":false,"syncNoteIdx":7,"pitch":30,"lpf":250,"modFreq":0.15,"modDepth":50,"sendVerb":55,"volume":40,"modWave":0,"sendDelay":10},"slot2":{"type":"wind","bpmSync":false,"syncNoteIdx":7,"intensity":45,"bpCenter":500,"gustRate":0.15,"gustDepth":75,"turbulence":30,"sendVerb":50,"volume":20,"sendDelay":10},"slot3":{"type":"clang","bpmSync":false,"syncNoteIdx":7,"pitch":45,"decay":6000,"repeatFreq":0.03,"randomize":60,"sendVerb":55,"volume":22,"hpf":20,"sendDelay":10},"slot4":{"type":"drone","bpmSync":false,"syncNoteIdx":7,"pitch":55,"lpf":1500,"detune":30,"modFreq":0.1,"modDepth":15,"sendVerb":45,"volume":15,"sendDelay":10},"slot5":{"type":"steam","bpmSync":false,"syncNoteIdx":7,"volume":0,"attack":300,"hpf":20,"decay":800,"repeatFreq":0.3,"sustain":300,"sendDelay":10,"sendVerb":10},"slot6":{"type":"ghost","bpmSync":false,"syncNoteIdx":7,"volume":0,"pitch":440,"hpf":20,"modFreq":0.3,"modDepth":15,"randomize":10,"sendDelay":10,"sendVerb":10}},"delay":[{"note":"1/4","feedback":30,"pan":-60,"vol":40,"reverbSend":20},{"note":"1/8","feedback":25,"pan":60,"vol":30,"reverbSend":20},{"note":"d1/8","feedback":20,"pan":-30,"vol":25,"reverbSend":20},{"note":"1/16","feedback":15,"pan":30,"vol":20,"reverbSend":20}],"reverb":{"mode":"mine","depth":80,"size":5000,"mod":0.2,"modDepth":40,"vol":70},"recording":null}
+<<END>>

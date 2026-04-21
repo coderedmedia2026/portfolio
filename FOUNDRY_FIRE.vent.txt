@@ -1,0 +1,95 @@
+VENT PATCH FILE
+===============
+Name: FOUNDRY FIRE
+BPM: 105
+Master Volume: 70
+
+[SLOT 1: CRACKLE]
+  Density: 60.00
+  HPF: 800.00
+  Spectral: 4500.00
+  Intensity: 65.00
+  Random: 75.00
+  >Delay: 10.00
+  >Verb: 25.00
+  Volume: 22.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 2: STEAM]
+  Attack: 250.00
+  HPF: 20.00
+  Decay: 1500.00
+  Repeat: 0.40
+  Sustain: 800.00
+  >Delay: 10.00
+  >Verb: 30.00
+  Volume: 25.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 3: RUMBLE]
+  Pitch: 55.00
+  LPF: 1200.00
+  Mod Freq: 1.50
+  Mod Wave: 0.00
+  Mod Depth: 45.00
+  >Delay: 10.00
+  >Verb: 25.00
+  Volume: 25.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 4: HUM]
+  Pitch: 80.00
+  LPF: 3500.00
+  Mod Freq: 4.00
+  Mod Wave: 2.00
+  Mod Depth: 35.00
+  >Delay: 10.00
+  >Verb: 20.00
+  Volume: 16.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 5: GEAR]
+  Pitch: 140.00
+  HPF: 100.00
+  Grit: 50.00
+  Decay: 250.00
+  Repeat: 1.50
+  >Delay: 10.00
+  >Verb: 20.00
+  Volume: 15.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 6: RATTLE]
+  Pitch: 280.00
+  HPF: 400.00
+  Decay: 250.00
+  Repeat: 2.00
+  Random: 40.00
+  >Delay: 10.00
+  >Verb: 10.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[DELAY]
+  Tap 1: note=1/4 feedback=30 pan=-60 vol=40 reverbSend=20
+  Tap 2: note=1/8 feedback=25 pan=60 vol=30 reverbSend=20
+  Tap 3: note=d1/8 feedback=20 pan=-30 vol=25 reverbSend=20
+  Tap 4: note=1/16 feedback=15 pan=30 vol=20 reverbSend=20
+
+[REVERB]
+  Mode: factory
+  Depth: 55
+  Size: 2000ms
+  Mod: 0.60Hz
+  Mod Depth: 25
+  Volume: 55
+
+<<JSON>>
+{"name":"FOUNDRY FIRE","version":2,"bpm":105,"masterVol":0.7,"slotTypes":["crackle","steam","rumble","hum","gear","rattle"],"generators":{"slot1":{"type":"crackle","bpmSync":false,"syncNoteIdx":7,"density":60,"intensity":65,"spectral":4500,"hpf":800,"randomize":75,"sendVerb":25,"volume":22,"sendDelay":10},"slot2":{"type":"steam","bpmSync":false,"syncNoteIdx":7,"attack":250,"decay":1500,"repeatFreq":0.4,"sustain":800,"sendVerb":30,"volume":25,"hpf":20,"sendDelay":10},"slot3":{"type":"rumble","bpmSync":false,"syncNoteIdx":7,"pitch":55,"lpf":1200,"modFreq":1.5,"modDepth":45,"sendVerb":25,"volume":25,"modWave":0,"sendDelay":10},"slot4":{"type":"hum","bpmSync":false,"syncNoteIdx":7,"pitch":80,"lpf":3500,"modFreq":4,"modWave":2,"modDepth":35,"sendVerb":20,"volume":16,"sendDelay":10},"slot5":{"type":"gear","bpmSync":false,"syncNoteIdx":7,"pitch":140,"grit":50,"decay":250,"repeatFreq":1.5,"sendVerb":20,"volume":15,"hpf":100,"sendDelay":10},"slot6":{"type":"rattle","bpmSync":false,"syncNoteIdx":7,"volume":0,"pitch":280,"hpf":400,"decay":250,"repeatFreq":2,"randomize":40,"sendDelay":10,"sendVerb":10}},"delay":[{"note":"1/4","feedback":30,"pan":-60,"vol":40,"reverbSend":20},{"note":"1/8","feedback":25,"pan":60,"vol":30,"reverbSend":20},{"note":"d1/8","feedback":20,"pan":-30,"vol":25,"reverbSend":20},{"note":"1/16","feedback":15,"pan":30,"vol":20,"reverbSend":20}],"reverb":{"mode":"factory","depth":55,"size":2000,"mod":0.6,"modDepth":25,"vol":55},"recording":null}
+<<END>>

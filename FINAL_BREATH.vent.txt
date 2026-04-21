@@ -1,0 +1,95 @@
+VENT PATCH FILE
+===============
+Name: FINAL BREATH
+BPM: 45
+Master Volume: 70
+
+[SLOT 1: WIND]
+  Intensity: 30.00
+  Center: 400.00
+  Gust Rate: 0.08
+  Gust Dep: 85.00
+  Turbul: 15.00
+  >Delay: 10.00
+  >Verb: 70.00
+  Volume: 20.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 2: DRONE]
+  Pitch: 55.00
+  LPF: 1200.00
+  Detune: 20.00
+  Mod Rate: 0.05
+  Mod Dep: 15.00
+  >Delay: 10.00
+  >Verb: 65.00
+  Volume: 18.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 3: GHOST]
+  Pitch: 165.00
+  HPF: 20.00
+  Mod Freq: 0.08
+  Mod Depth: 15.00
+  Random: 35.00
+  >Delay: 10.00
+  >Verb: 80.00
+  Volume: 15.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 4: BELL]
+  Pitch: 55.00
+  HPF: 20.00
+  Decay: 9500.00
+  Repeat: 0.02
+  Harmonic: 10.00
+  >Delay: 10.00
+  >Verb: 85.00
+  Volume: 12.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 5: RUMBLE]
+  Pitch: 60.00
+  LPF: 20000.00
+  Mod Freq: 1.00
+  Mod Wave: 0.00
+  Mod Depth: 10.00
+  >Delay: 10.00
+  >Verb: 10.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[SLOT 6: DRIP]
+  Pitch: 500.00
+  HPF: 200.00
+  Decay: 400.00
+  Repeat: 0.30
+  Wetness: 40.00
+  >Delay: 10.00
+  >Verb: 30.00
+  Volume: 0.00
+  BPM Sync: false
+  Sync Note Index: 7
+
+[DELAY]
+  Tap 1: note=1/4 feedback=30 pan=-60 vol=40 reverbSend=20
+  Tap 2: note=1/8 feedback=25 pan=60 vol=30 reverbSend=20
+  Tap 3: note=d1/8 feedback=20 pan=-30 vol=25 reverbSend=20
+  Tap 4: note=1/16 feedback=15 pan=30 vol=20 reverbSend=20
+
+[REVERB]
+  Mode: mine
+  Depth: 90
+  Size: 6500ms
+  Mod: 0.15Hz
+  Mod Depth: 45
+  Volume: 82
+
+<<JSON>>
+{"name":"FINAL BREATH","version":2,"bpm":45,"masterVol":0.7,"slotTypes":["wind","drone","ghost","bell","rumble","drip"],"generators":{"slot1":{"type":"wind","bpmSync":false,"syncNoteIdx":7,"intensity":30,"bpCenter":400,"gustRate":0.08,"gustDepth":85,"turbulence":15,"sendVerb":70,"volume":20,"sendDelay":10},"slot2":{"type":"drone","bpmSync":false,"syncNoteIdx":7,"pitch":55,"lpf":1200,"detune":20,"modFreq":0.05,"modDepth":15,"sendVerb":65,"volume":18,"sendDelay":10},"slot3":{"type":"ghost","bpmSync":false,"syncNoteIdx":7,"pitch":165,"modFreq":0.08,"modDepth":15,"randomize":35,"sendVerb":80,"volume":15,"hpf":20,"sendDelay":10},"slot4":{"type":"bell","bpmSync":false,"syncNoteIdx":7,"pitch":55,"decay":9500,"repeatFreq":0.02,"harmonicity":10,"sendVerb":85,"volume":12,"hpf":20,"sendDelay":10},"slot5":{"type":"rumble","bpmSync":false,"syncNoteIdx":7,"volume":0,"pitch":60,"lpf":20000,"modFreq":1,"modWave":0,"modDepth":10,"sendDelay":10,"sendVerb":10},"slot6":{"type":"drip","bpmSync":false,"syncNoteIdx":7,"volume":0,"pitch":500,"hpf":200,"decay":400,"repeatFreq":0.3,"wetness":40,"sendDelay":10,"sendVerb":30}},"delay":[{"note":"1/4","feedback":30,"pan":-60,"vol":40,"reverbSend":20},{"note":"1/8","feedback":25,"pan":60,"vol":30,"reverbSend":20},{"note":"d1/8","feedback":20,"pan":-30,"vol":25,"reverbSend":20},{"note":"1/16","feedback":15,"pan":30,"vol":20,"reverbSend":20}],"reverb":{"mode":"mine","depth":90,"size":6500,"mod":0.15,"modDepth":45,"vol":82},"recording":null}
+<<END>>
