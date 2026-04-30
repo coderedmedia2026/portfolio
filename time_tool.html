@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Tool</title>
+
+<style>
+:root {
+  --base: #141414;        /* 60% */
+  --panel: #232323;      /* 30% */
+  --accent: #ff9f1c;     /* 10% */
+
+  --display-bg: #071912;
+  --display-fg: #7cffb2;
+
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #666, #333);
+  font-family: system-ui, sans-serif;
+}
+
+/* ========= ENCLOSURE ========= */
+#unit {
+  position: relative;
+  width: 480px;
+  padding: 20px 20px 88px;
+  border-radius: var(--radius);
+  background: linear-gradient(165deg, #1d1d1d, #0b0b0b);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.05),
+    inset 0 -14px 18px rgba(0,0,0,.95),
+    0 20px 34px rgba(0,0,0,.55);
+}
+
+/* ========= LOGO ========= */
+#logo {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-size: 28px;
+  margin-bottom: 14px;
+  color: #d0d0d0;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9);
+}
+
+/* ========= DISPLAY ========= */
+#display {
+  background: linear-gradient(180deg, #04110c, var(--display-bg));
+  color: var(--display-fg);
+  font-family: "Courier New", monospace;
+  padding: 18px;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.05),
+    inset 0 -6px 10px rgba(0,0,0,.9);
+}
+
+/* BPM */
+#tempoRow {
+  text-align: center;
+  margin-bottom: 14px;
+}
+#tempoLabel {
+  font-size: 11px;
+  letter-spacing: 2px;
+  opacity: .6;
+}
+#bpm {
+  font-size: 40px;
+  font-weight: 700;
+  cursor: ns-resize;
+  user-select: none;
+}
+#bpmInput {
+  width: 100px;
+  font-size: 36px;
+  font-family: inherit;
+  text-align: center;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--display-fg);
+  outline: none;
+}
+
+/* ========= GRID ========= */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 6px 12px;
+  font-size: 14px;
+}
+
+.header { opacity: .6; }
+.cell { display: inline-flex; align-items: baseline; white-space: nowrap; }
+.value { min-width: 62px; }
+.unit { margin-left: 2px; opacity: .45; }
+.cell.swung { background: linear-gradient(90deg, rgba(255,159,28,.2), transparent); border-radius: 2px; }
+
+/* ========= SWING ========= */
+#swing {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+#swing label { font-size: 12px; letter-spacing: 1px; opacity: .7; }
+
+/* ========= BUTTONS ========= */
+.tapWrap {
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  padding: 6px;
+  width: fit-content;
+  margin: 18px auto 0;
+}
+.tap {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(180deg, #3a3a3a, #151515);
+  box-shadow:
+    inset 0 12px 16px rgba(255,255,255,.12),
+    inset 0 -16px 22px rgba(0,0,0,.95),
+    0 10px 16px rgba(0,0,0,.55);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tap:active { transform: translateY(4px); }
+
+.utility {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+  border: 1px solid #000;
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.08),
+    inset 0 -3px 4px rgba(0,0,0,.8);
+  font-size: 12px;
+  cursor: pointer;
+}
+#mode { position: absolute; right: 40px; bottom: 24px; }
+</style>
+</head>
+
+<body>
+<div id="unit">
+
+  <div id="logo">TIME TOOL</div>
+
+  <div id="display">
+    <div id="tempoRow">
+      <div id="tempoLabel">BPM</div>
+      <div id="bpm">120</div>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="header">Note</div>
+      <div class="header">Value</div>
+      <div class="header">Dotted</div>
+      <div class="header">Triplet</div>
+    </div>
+
+    <div id="swing">
+      <label>SWING</label>
+      <input id="swingAmt" type="range" min="0" max="100" value="0">
+      <button id="swingNote" class="utility">1/8</button>
+    </div>
+  </div>
+
+  <div class="tapWrap">
+    <button id="tap" class="tap">TAP</button>
+  </div>
+
+  <button id="mode" class="utility">ms</button>
+
+</div>
+
+<script>
+let bpm = 120;
+let taps = [];
+let mode = 'ms';
+let swing = 0;
+let swingIndex = 0;
+
+const notes = [
+  ['1/2', 2],
+  ['1/4', 1],
+  ['1/8', 0.5],
+  ['1/16', 0.25],
+  ['1/32', 0.125]
+];
+const swingable = [2,3];
+
+const bpmEl = document.getElementById('bpm');
+const grid = document.getElementById('grid');
+const swingBtn = document.getElementById('swingNote');
+const modeBtn = document.getElementById('mode');
+
+function render() {
+  bpmEl.textContent = bpm.toFixed(1);
+  grid.querySelectorAll('.cell').forEach(e => e.remove());
+
+  const qMs = 60000 / bpm;
+
+  notes.forEach(([label, mult], idx) => {
+    let base = qMs * mult;
+    const swung = idx === swingable[swingIndex] && swing > 0;
+    if (swung) base *= 1 + swing * 0.005;
+
+    const vals = [base, base * 1.5, base * 2 / 3];
+
+    const fmt = v =>
+      mode === 'ms'
+        ? `<span class="value">${v.toFixed(1)}</span><span class="unit">ms</span>`
+        : `<span class="value">${(1000 / v).toFixed(3)}</span><span class="unit">Hz</span>`;
+
+    [label, ...vals.map(fmt)].forEach(text => {
+      const d = document.createElement('div');
+      d.className = 'cell' + (swung ? ' swung' : '');
+      d.innerHTML = text;
+      grid.appendChild(d);
+    });
+  });
+}
+render();
+
+/* Tap tempo */
+document.getElementById('tap').onclick = () => {
+  const now = performance.now();
+  taps.push(now);
+  if (taps.length > 6) taps.shift();
+  if (taps.length > 1) {
+    const diffs = taps.slice(1).map((t,i)=>t-taps[i]);
+    bpm = Math.min(300, Math.max(20, 60000 / (diffs.reduce((a,b)=>a+b)/diffs.length)));
+    render();
+  }
+};
+
+/* BPM drag */
+let dragging=false, startY, startBpm;
+bpmEl.onmousedown = e => { dragging=true; startY=e.clientY; startBpm=bpm; };
+document.onmousemove = e => {
+  if (dragging) {
+    bpm = Math.min(300, Math.max(20, startBpm + (startY - e.clientY) * 0.1));
+    render();
+  }
+};
+document.onmouseup = () => dragging=false;
+
+/* BPM direct entry (double‑click) */
+bpmEl.ondblclick = () => {
+  const input = document.createElement('input');
+  input.id = 'bpmInput';
+  input.value = bpm.toFixed(1);
+  bpmEl.replaceWith(input);
+  input.focus();
+  input.select();
+
+  const commit = () => {
+    const val = parseFloat(input.value);
+    bpm = isNaN(val) ? bpm : Math.min(300, Math.max(20, val));
+    input.replaceWith(bpmEl);
+    render();
+  };
+
+  input.onblur = commit;
+  input.onkeydown = e => { if (e.key === 'Enter') commit(); };
+};
+
+/* Swing */
+document.getElementById('swingAmt').oninput = e => { swing = +e.target.value; render(); };
+swingBtn.onclick = () => { swingIndex = (swingIndex + 1) % swingable.length; swingBtn.textContent = notes[swingable[swingIndex]][0]; render(); };
+
+/* ms / hz */
+modeBtn.onclick = () => { mode = mode === 'ms' ? 'hz' : 'ms'; modeBtn.textContent = mode; render(); };
+</script>
+</body>
+</html>
