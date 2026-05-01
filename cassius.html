@@ -52,7 +52,7 @@
   }
 
   #machine {
-    width: 1180px;
+    width: 1300px;
     background: linear-gradient(145deg, #363a3e 0%, #2e3236 20%, #2a2d30 50%, #2c2f33 80%, #343840 100%);
     border-radius: 12px;
     box-shadow: 
@@ -272,10 +272,27 @@
     padding-bottom: 4px;
   }
 
-  /* SOUND CONTROLS */
+  /* Sound controls column dividers */
   #sound-panel {
     width: 320px;
     flex-shrink: 0;
+    position: relative;
+  }
+
+  .sound-col-dividers {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 12px; right: 12px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .sound-col-div-line {
+    position: absolute;
+    top: 52px; /* below panel-label + col header */
+    bottom: 12px;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, #3a3e44 10%, #3a3e44 90%, transparent);
   }
 
   .sound-controls-header {
@@ -315,6 +332,7 @@
     align-items: center;
     height: 26px;
     position: relative;
+    padding: 0 5px;
   }
 
   .h-slider {
@@ -360,7 +378,7 @@
   /* TEMPO SECTION */
   #tempo-panel {
     flex: 0 0 auto;
-    width: 320px;
+    width: 460px;
   }
 
   .bpm-display {
@@ -486,6 +504,7 @@
   /* EFFECTS SECTION */
   #effects-panel {
     flex: 1;
+    min-width: 0;
   }
 
   .fx-grid {
@@ -554,7 +573,7 @@
 
   #mixer-grid {
     display: flex;
-    gap: 4px;
+    gap: 5px;
   }
 
   .mixer-channel {
@@ -562,17 +581,17 @@
     background: rgba(0,0,0,0.2);
     border-radius: 6px;
     border: 1px solid #1a1c1e;
-    padding: 6px 4px;
+    padding: 8px 8px;
     text-align: center;
   }
 
   .mix-ch-label {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: var(--text-bright);
     text-transform: uppercase;
-    margin-bottom: 5px;
+    margin-bottom: 7px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -581,7 +600,7 @@
   .mix-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
     align-items: center;
   }
 
@@ -590,20 +609,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1px;
+    gap: 3px;
   }
 
   .mix-label {
     font-size: 8px;
     font-weight: 700;
     color: var(--text-mid);
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
   }
 
   .mix-val {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 8px;
+    font-size: 9px;
     color: var(--green-active);
   }
 
@@ -611,7 +630,7 @@
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 4px;
+    height: 5px;
     border-radius: 2px;
     outline: none;
     cursor: pointer;
@@ -620,8 +639,8 @@
 
   .mix-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 10px;
-    height: 14px;
+    width: 12px;
+    height: 18px;
     border-radius: 2px;
     background: linear-gradient(180deg, #9aa0a8 0%, #5a6068 50%, #7a8088 100%);
     cursor: pointer;
@@ -630,8 +649,8 @@
   }
 
   .mix-slider::-moz-range-thumb {
-    width: 10px;
-    height: 14px;
+    width: 12px;
+    height: 18px;
     border-radius: 2px;
     background: linear-gradient(180deg, #9aa0a8 0%, #5a6068 50%, #7a8088 100%);
     cursor: pointer;
@@ -709,6 +728,12 @@
         <div class="sc-col-label">Decay</div>
         <div class="sc-col-label">Dist</div>
       </div>
+      <!-- Column divider lines -->
+      <div class="sound-col-dividers">
+        <div class="sound-col-div-line" style="left:25%"></div>
+        <div class="sound-col-div-line" style="left:50%"></div>
+        <div class="sound-col-div-line" style="left:75%"></div>
+      </div>
       <div id="sound-rows"></div>
     </div>
   </div>
@@ -724,6 +749,8 @@
       <div class="tempo-row">
         <div class="tempo-label">BPM</div>
         <div id="bpm-display" class="bpm-display" title="Click to edit, drag to change">120</div>
+        <button class="hw-btn btn-play" id="play-btn" style="margin-left:10px;">▶ Play</button>
+        <button class="hw-btn btn-stop" id="stop-btn">■ Stop</button>
       </div>
 
       <div class="tempo-row">
@@ -734,23 +761,15 @@
         </div>
       </div>
 
-      <div class="tempo-row" style="gap:6px;flex-wrap:wrap;">
-        <button class="hw-btn btn-play" id="play-btn">▶ Play</button>
-        <button class="hw-btn btn-stop" id="stop-btn">■ Stop</button>
-      </div>
-
-      <div class="tempo-row">
+      <div class="tempo-row" style="gap:6px;flex-wrap:nowrap;align-items:center;">
         <div class="tempo-label">Preset</div>
         <select class="preset-select" id="preset-select">
           <option value="">— Select —</option>
           <option value="sweat">sweat</option>
           <option value="dark_room">dark room</option>
-          <option value="müll">müll</option>
+          <option value="mull">mull</option>
           <option value="enigma">enigma</option>
         </select>
-      </div>
-
-      <div class="tempo-row" style="gap:6px;flex-wrap:wrap;">
         <button class="hw-btn btn-clear" id="clear-btn">✕ Clear</button>
         <button class="hw-btn btn-save" id="save-btn">↓ Save</button>
         <button class="hw-btn btn-load" id="load-btn">↑ Load</button>
@@ -1700,7 +1719,7 @@ function buildSoundControls() {
 function buildMixer() {
   const grid = document.getElementById('mixer-grid');
   grid.innerHTML = '';
-  const labels = ['Vol','Pan','Dly','Rvb'];
+  const labels = ['Volume','Pan','Delay','Reverb'];
   for (let s = 0; s < NUM_SOUNDS; s++) {
     const ch = document.createElement('div');
     ch.className = 'mixer-channel';
@@ -1899,7 +1918,7 @@ const PRESETS = {
   'dark_room': {
     bpm: 60, swing: 0,
     pattern: [
-      [1,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+      [1,1,0,0,0,0,1,0,0,0,1,0,0,0,1,1],
       [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -1924,7 +1943,7 @@ const PRESETS = {
     ],
     effects: { delayMode:'stereo', delayNote:'0.1875', delayFeedback:'58', dlyToRvb:'44', hallSize:'3635' }
   },
-  'müll': {
+  'mull': {
     bpm: 128, swing: 0,
     pattern: [
       [1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,1],
