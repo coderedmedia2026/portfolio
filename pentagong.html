@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1400, initial-scale=0.5, user-scalable=yes">
 <title>PENTAGONG</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
@@ -160,27 +160,27 @@ body::before {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 2px 3px;
+  padding: 3px 4px;
   background: var(--bg-panel);
   backdrop-filter: blur(6px);
   border-radius: 6px;
   border: 1px solid rgba(255,255,255,0.1);
   min-height: 0;
-  gap: 1px;
+  gap: 2px;
   justify-content: center;
 }
 .pattern-boxes {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 1px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
 }
 .pattern-box {
-  height: 11px;
-  border-radius: 2px;
+  height: 16px;
+  border-radius: 3px;
   border: 1px solid rgba(13,34,64,0.3);
   background: rgba(255,255,255,0.18);
   color: var(--font-dark);
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -203,11 +203,11 @@ body::before {
   background: rgba(13,34,64,0.55);
   color: var(--font-light);
   border: 1px solid rgba(255,255,255,0.2);
-  padding: 0 2px;
-  border-radius: 2px;
+  padding: 3px 2px;
+  border-radius: 3px;
   font-family: 'Rajdhani', sans-serif;
   font-weight: 700;
-  font-size: 7px;
+  font-size: 9px;
   line-height: 1.3;
   cursor: pointer;
   text-transform: uppercase;
@@ -544,6 +544,89 @@ input[type="range"]::-moz-range-thumb {
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 13px;
+}
+
+/* HELP BUTTON */
+.help-btn {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  background: rgba(13,34,64,0.4);
+  color: var(--font-light);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.help-btn:hover { background: rgba(13,34,64,0.8); border-color: rgba(255,255,255,0.8); }
+
+/* HELP MODAL */
+.help-modal-content {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.help-page h3 {
+  color: var(--accent-blue);
+  font-size: 14px;
+  margin: 12px 0 6px 0;
+}
+.help-page h3:first-child { margin-top: 0; }
+.help-page p {
+  font-size: 12px;
+  color: var(--font-light);
+  margin: 4px 0;
+  line-height: 1.5;
+}
+.help-page b { color: #aed6ff; }
+.help-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.help-nav-btn {
+  background: rgba(13,34,64,0.6);
+  color: var(--font-light);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  cursor: pointer;
+}
+.help-nav-btn:hover { background: rgba(13,34,64,0.9); }
+.help-nav-btn:disabled { opacity: 0.3; cursor: default; }
+#help-page-indicator {
+  font-size: 11px;
+  color: var(--font-dark);
+  font-weight: 700;
+}
+
+/* ORIENTATION OVERLAY */
+#orientation-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 15, 35, 0.97);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--font-light);
+  text-align: center;
+}
+@media (max-width: 900px) and (orientation: portrait) {
+  #orientation-overlay { display: flex; }
 }
 
 /* BOTTOM SECTION */
@@ -986,6 +1069,7 @@ input[type="range"]::-moz-range-thumb {
       <div class="dot"></div>
       <span>RANDOM INPUT</span>
     </div>
+    <button class="help-btn" id="help-btn" title="Help Guide">?</button>
   </div>
 
   <!-- MIDDLE -->
@@ -1027,6 +1111,80 @@ input[type="range"]::-moz-range-thumb {
           <button class="export-btn" id="btn-export" title="Record 60 seconds of audio starting when you press Play">EXPORT .WAV</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORIENTATION OVERLAY (mobile portrait) -->
+<div id="orientation-overlay">
+  <div class="orientation-msg">
+    <div style="font-size:48px;margin-bottom:16px;">↻</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">Please Rotate Your Device</div>
+    <div style="font-size:13px;opacity:0.8;">PENTAGONG is designed for landscape orientation</div>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="help-modal">
+  <div class="modal-content help-modal-content">
+    <button class="modal-close" id="help-close">&times;</button>
+    <div class="modal-title">PENTAGONG — Help Guide</div>
+    <div id="help-pages">
+      <div class="help-page" data-page="0">
+        <h3>Overview</h3>
+        <p>PENTAGONG is a browser-based FM synthesis music instrument with 5 step sequencers, pattern chaining, and built-in effects.</p>
+        <h3>Patch Bar (Top)</h3>
+        <p><b>Presets:</b> Select a preset from the dropdown to load a pre-made song. Your sequences, tones, effects, and BPM will all update.</p>
+        <p><b>Patch Name:</b> Name your creation. This name is used when saving.</p>
+        <p><b>Save / Load:</b> Save your work as a .pgpatch file. Load a previously saved file.</p>
+        <p><b>Reset All:</b> Returns everything to default — blank sequences, default instruments, default BPM.</p>
+        <p><b>Random Input:</b> When enabled, empty steps have a chance of being randomly filled each playthrough based on each sequencer's Randomize slider.</p>
+      </div>
+      <div class="help-page" data-page="1" style="display:none;">
+        <h3>Step Sequencers (Left)</h3>
+        <p>Each of the 5 rows is a step sequencer. Click a step button to cycle through the 5 pentatonic notes (color-coded). Click again to clear.</p>
+        <p><b>Octave Dots:</b> The small dots above and below each step shift the note up or down by octaves. Click to add, click again to remove.</p>
+        <p><b>Page Buttons (Pg 1-4):</b> Each sequencer can have up to 64 steps across 4 pages of 16.</p>
+        <p><b>Steps:</b> Set the total number of active steps (1-64). The sequencer loops after this many steps.</p>
+        <p><b>Time:</b> Speed multiplier for this sequencer relative to the master BPM.</p>
+        <p><b>Chromatic:</b> Toggles chromatic mode — click steps to open a dropdown of all 12 chromatic notes (shown in purple). Notes display transposed names based on the current root key.</p>
+        <p><b>Randomize:</b> Sets the probability (0-100%) that empty steps get randomly filled each playthrough. Only works when Random Input is enabled.</p>
+      </div>
+      <div class="help-page" data-page="2" style="display:none;">
+        <h3>Pattern Sequencer (Center)</h3>
+        <p>Each sequencer has 8 pattern slots (numbered 1-8). Initially only pattern 1 is active.</p>
+        <p>Click a pattern number to switch to it. If it's inactive (greyed out), clicking activates it with a blank sequence.</p>
+        <p>When you press Play, patterns chain in order: pattern 1 plays, then pattern 2 (if active), etc. After the last active pattern, it loops back to pattern 1.</p>
+        <p><b>Copy:</b> Copies the current pattern to a clipboard.</p>
+        <p><b>Paste:</b> Pastes the clipboard into the current pattern slot.</p>
+        <p><b>Clear:</b> Clears the current pattern. Pattern 1 can be cleared but stays active; other patterns are deactivated.</p>
+      </div>
+      <div class="help-page" data-page="3" style="display:none;">
+        <h3>Tone Controls (Right)</h3>
+        <p>Each of the 5 tones corresponds to a step sequencer row. Select an FM instrument from the dropdown.</p>
+        <p><b>Tone:</b> Controls FM brightness — low values are mellow, high values are bright and harmonically rich.</p>
+        <p><b>Release:</b> How long the note rings out after triggering.</p>
+        <p><b>Delay / Reverb:</b> Pre-fader send levels to the stereo delay and reverb effect buses.</p>
+        <p><b>Pan:</b> Stereo position (left to right).</p>
+        <p><b>Volume:</b> Output level for this tone's dry signal.</p>
+        <p><b>Chorus:</b> Insert chorus effect. Off, 1 (light), 2 (deep), 3 (stereo ensemble).</p>
+        <p><b>Edit:</b> Opens the FM synthesis editor where you can select algorithms, adjust operator ratios, levels, envelopes, waveforms, and feedback.</p>
+      </div>
+      <div class="help-page" data-page="4" style="display:none;">
+        <h3>Effects & Transport (Bottom)</h3>
+        <p><b>Stereo Delay:</b> 4 tempo-synced delay taps. Each tap has note value (with dotted options), feedback, pan, volume, and reverb send.</p>
+        <p><b>Reverb:</b> Convolution reverb with Hall/Cathedral modes and adjustable size.</p>
+        <p><b>Play / Stop:</b> Start and stop playback. You can also use the spacebar.</p>
+        <p><b>BPM:</b> Master tempo in beats per minute.</p>
+        <p><b>Root Key:</b> Transpose all pentatonic notes. Use the up/down arrows.</p>
+        <p><b>Master Vol:</b> Overall output volume knob — click and drag to adjust.</p>
+        <p><b>Export .WAV:</b> Records 60 seconds of live audio and downloads as a WAV file. Starts playback automatically if stopped.</p>
+      </div>
+    </div>
+    <div class="help-nav">
+      <button class="help-nav-btn" id="help-prev">← Previous</button>
+      <span id="help-page-indicator">Page 1 / 5</span>
+      <button class="help-nav-btn" id="help-next">Next →</button>
     </div>
   </div>
 </div>
@@ -1619,7 +1777,7 @@ for (let i = 0; i < 5; i++) {
     chromaticMode: false,
     randomize: 0,
     // Pattern chaining: 16 slots, only slot 0 active at start
-    patterns: Array.from({length: 16}, (_, pi) => ({
+    patterns: Array.from({length: 8}, (_, pi) => ({
       active: pi === 0,
       steps: new Array(64).fill(null).map(() => ({ note: -1, octUp: 0, octDown: 0, chromaticNote: -1 })),
       stepCount: 16,
@@ -1788,8 +1946,8 @@ function startClock() {
             if (seq.playbackPattern === seq.currentPattern) saveCurrentPattern(i);
             // Find next active pattern, wrapping around
             let next = seq.playbackPattern;
-            for (let tries = 0; tries < 16; tries++) {
-              next = (next + 1) % 16;
+            for (let tries = 0; tries < 8; tries++) {
+              next = (next + 1) % 8;
               if (seq.patterns[next].active) break;
             }
             if (next !== seq.playbackPattern) {
@@ -1801,7 +1959,7 @@ function startClock() {
           } else if (prevPos === -1) {
             // First tick of playback — start from pattern 0 (or the first active)
             let start = 0;
-            for (let p = 0; p < 16; p++) {
+            for (let p = 0; p < 8; p++) {
               if (seq.patterns[p].active) { start = p; break; }
             }
             seq.playbackPattern = start;
@@ -2954,7 +3112,7 @@ function refreshAllUI() {
     updateToneChain(i);
     // Ensure patterns array exists (for loaded patches from older versions)
     if (!state.sequences[i].patterns) {
-      state.sequences[i].patterns = Array.from({length: 16}, (_, pi) => ({
+      state.sequences[i].patterns = Array.from({length: 8}, (_, pi) => ({
         active: pi === 0,
         steps: new Array(64).fill(null).map(() => ({ note: -1, octUp: 0, octDown: 0, chromaticNote: -1 })),
         stepCount: 16,
@@ -3078,7 +3236,7 @@ function expandCompactState(compact) {
     seq.playbackPattern = seq.currentPattern;
     seq.steps = expandSteps(cs.steps);
     // Reset all patterns to inactive blanks
-    seq.patterns = Array.from({length: 16}, () => ({
+    seq.patterns = Array.from({length: 8}, () => ({
       active: false,
       steps: new Array(64).fill(null).map(blankStep),
       stepCount: 16,
@@ -3166,7 +3324,7 @@ document.getElementById('btn-reset').onclick = () => {
       state.sequences[i].steps[s] = { note: -1, octUp: 0, octDown: 0, chromaticNote: -1 };
     }
     // Reset all pattern slots
-    for (let p = 0; p < 16; p++) {
+    for (let p = 0; p < 8; p++) {
       state.sequences[i].patterns[p] = {
         active: p === 0,
         steps: new Array(64).fill(null).map(() => ({ note: -1, octUp: 0, octDown: 0, chromaticNote: -1 })),
@@ -3191,6 +3349,32 @@ document.getElementById('btn-reset').onclick = () => {
   document.getElementById('patch-name').value = 'Init Patch';
   document.getElementById('bpm-input').value = 120;
   refreshAllUI();
+};
+
+// ========================= HELP MODAL =========================
+let helpPage = 0;
+const HELP_TOTAL_PAGES = 5;
+function updateHelpPage() {
+  document.querySelectorAll('.help-page').forEach(el => {
+    el.style.display = parseInt(el.dataset.page) === helpPage ? 'block' : 'none';
+  });
+  document.getElementById('help-page-indicator').textContent = `Page ${helpPage + 1} / ${HELP_TOTAL_PAGES}`;
+  document.getElementById('help-prev').disabled = helpPage === 0;
+  document.getElementById('help-next').disabled = helpPage === HELP_TOTAL_PAGES - 1;
+}
+document.getElementById('help-btn').onclick = () => {
+  helpPage = 0;
+  updateHelpPage();
+  document.getElementById('help-modal').classList.add('open');
+};
+document.getElementById('help-close').onclick = () => {
+  document.getElementById('help-modal').classList.remove('open');
+};
+document.getElementById('help-prev').onclick = () => {
+  if (helpPage > 0) { helpPage--; updateHelpPage(); }
+};
+document.getElementById('help-next').onclick = () => {
+  if (helpPage < HELP_TOTAL_PAGES - 1) { helpPage++; updateHelpPage(); }
 };
 
 // ========================= BUILD UI =========================
@@ -3249,7 +3433,7 @@ function loadPattern(seqIdx, patIdx) {
 
 function updatePatternVisuals(seqIdx) {
   const seq = state.sequences[seqIdx];
-  for (let p = 0; p < 16; p++) {
+  for (let p = 0; p < 8; p++) {
     const box = document.getElementById(`pat-${seqIdx}-${p}`);
     if (!box) continue;
     box.className = 'pattern-box';
@@ -3266,7 +3450,7 @@ function buildPatternRow(idx) {
   
   const boxes = document.createElement('div');
   boxes.className = 'pattern-boxes';
-  for (let p = 0; p < 16; p++) {
+  for (let p = 0; p < 8; p++) {
     const box = document.createElement('button');
     box.className = 'pattern-box' + (p === 0 ? ' current' : ' inactive');
     box.id = `pat-${idx}-${p}`;
