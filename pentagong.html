@@ -1053,6 +1053,199 @@ input[type="range"]::-moz-range-thumb {
 #effects-panel .slider-val, #tempo-panel .slider-val {
   color: var(--slider-green);
 }
+
+
+/* ===== PENTAGONG V3: clean sunlit glass + jewel controls + larger text ===== */
+:root {
+  --font-dark: #051a31;
+  --font-light: #f7fdff;
+  --accent-blue: #34b5dc;
+  --slider-green: #91ffd8;
+  --slider-track: rgba(3, 24, 48, .72);
+  --bg-panel: rgba(246, 253, 255, .18);
+  --bg-panel-water: rgba(3, 31, 56, .58);
+}
+html, body { font-size: 16px; }
+body {
+  background: #08213f url('pentagong_assets/sea_sky_background_v3.png') center center / cover fixed no-repeat !important;
+}
+#app { max-width: 1540px !important; padding: 18px 18px 22px !important; }
+#middle { gap: 10px !important; margin-bottom: 10px !important; }
+#bottom { gap: 10px !important; }
+#patch-bar { min-height: 58px; margin-bottom: 10px !important; gap: 10px !important; padding: 9px 14px !important; }
+#patch-bar,.seq-row,.pattern-row,.tone-row {
+  background-color: rgba(255,255,255,.13) !important;
+  background-image: linear-gradient(135deg, rgba(255,255,255,.38), rgba(255,255,255,.08) 48%, rgba(255,221,160,.12)), url('pentagong_assets/clean_glass_panel.png') !important;
+  background-size: cover, 100% 100% !important;
+  border: 1px solid rgba(255,255,255,.48) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(120,220,255,.16), 0 14px 34px rgba(0,18,42,.20) !important;
+  backdrop-filter: blur(18px) saturate(145%) !important;
+}
+.seq-row,.tone-row { padding: 7px 9px !important; border-radius: 12px !important; }
+.pattern-row { padding: 6px !important; border-radius: 12px !important; }
+#effects-panel,#tempo-panel,.delay-tap,.effects-half {
+  background-color: rgba(2,31,55,.54) !important;
+  background-image: linear-gradient(135deg, rgba(255,220,160,.10), rgba(1,24,48,.62)), url('pentagong_assets/organic_effects_panel.png') !important;
+  background-size: cover, 100% 100% !important;
+  border: 1px solid rgba(219,246,255,.28) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 18px 42px rgba(0,8,26,.36) !important;
+}
+#effects-panel { padding: 12px !important; }
+#tempo-panel { padding: 12px !important; }
+#logo { width: 210px !important; height: 46px !important; }
+.patch-btn { font-size: 15px !important; padding: 6px 13px !important; border-radius: 8px !important; }
+#preset-select,#patch-name { font-size: 15px !important; height: 32px !important; }
+#preset-select { width: 205px !important; } #patch-name { width: 165px !important; }
+.random-toggle { font-size: 14px !important; color: #f7fdff !important; text-shadow: 0 2px 4px rgba(0,0,0,.5) !important; }
+.random-toggle .dot { width: 14px !important; height: 14px !important; }
+.help-btn { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+.step-btn {
+  width: 34px !important; height: 34px !important; border-radius: 10px !important;
+  font-size: 12px !important; font-weight: 900 !important;
+  background: rgba(255,255,255,.22) !important;
+}
+.seq-steps { gap: 3px !important; }
+.step-col { gap: 2px !important; }
+.oct-dot { width: 10px !important; height: 10px !important; border-width: 2px !important; }
+.step-btn.note1 { background-image: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,0) 36%), url('pentagong_assets/gem_sapphire.png') !important; background-size: cover !important; }
+.step-btn.note2 { background-image: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,0) 36%), url('pentagong_assets/gem_jade.png') !important; background-size: cover !important; }
+.step-btn.note3 { background-image: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,0) 36%), url('pentagong_assets/gem_peridot.png') !important; background-size: cover !important; }
+.step-btn.note4 { background-image: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,0) 36%), url('pentagong_assets/gem_aqua.png') !important; background-size: cover !important; }
+.step-btn.note5 { background-image: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,0) 36%), url('pentagong_assets/gem_lapis.png') !important; background-size: cover !important; }
+.step-btn.note-chromatic { background-image: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,0) 36%), url('pentagong_assets/gem_amethyst.png') !important; background-size: cover !important; }
+.step-btn.note1,.step-btn.note2,.step-btn.note3,.step-btn.note4,.step-btn.note5,.step-btn.note-chromatic {
+  border: 1px solid rgba(255,255,255,.72) !important;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.42), inset 0 -7px 12px rgba(0,0,0,.16), 0 5px 13px rgba(0,20,48,.28) !important;
+}
+.tone-inst-select { width: 124px !important; font-size: 14px !important; padding: 4px 6px !important; }
+.tone-sliders { gap: 8px 8px !important; }
+.slider-group label,.randomize-group label,.chorus-switch,.seq-label { font-size: 11px !important; letter-spacing: .035em; }
+.slider-val { font-size: 10px !important; }
+.randomize-group input[type="range"] { width: 74px !important; }
+input[type="range"] { height: 9px !important; }
+input[type="range"]::-webkit-slider-thumb { width: 18px !important; height: 18px !important; }
+input[type="range"]::-moz-range-thumb { width: 18px !important; height: 18px !important; }
+.page-btn { width: 24px !important; height: 21px !important; font-size: 12px !important; border-radius: 6px !important; }
+.step-count-sel,.time-mult-sel,.chorus-sel { font-size: 13px !important; padding: 3px 5px !important; }
+.chromatic-btn { font-size: 11px !important; padding: 4px 7px !important; border-radius: 7px !important; }
+.pattern-box { height: 23px !important; font-size: 12px !important; border-radius: 8px !important; }
+.pattern-btn { font-size: 11px !important; padding: 5px 3px !important; border-radius: 6px !important; }
+.edit-btn { font-size: 12px !important; padding: 5px 9px !important; border-radius: 7px !important; }
+.section-title { font-size: 14px !important; margin-bottom: 8px !important; }
+.tap-title { font-size: 12px !important; }
+.tap-controls label { font-size: 10px !important; }
+.tap-controls select,#effects-panel select { font-size: 12px !important; padding: 3px 4px !important; }
+.delay-tap { padding: 8px !important; }
+.effects-half { padding: 10px !important; }
+.bpm-input { width: 88px !important; font-size: 22px !important; height: 38px !important; }
+.bpm-label { font-size: 13px !important; }
+.play-toggle { width: 46px !important; height: 26px !important; border-radius: 15px !important; }
+.play-toggle::after { width: 22px !important; height: 22px !important; }
+.play-toggle.active::after { transform: translateX(20px) !important; }
+.knob-container,.knob-ring { width: 62px !important; height: 62px !important; }
+.knob-inner { width: 46px !important; height: 46px !important; }
+.knob-indicator { height: 16px !important; width: 3px !important; }
+.key-display { font-size: 16px !important; min-width: 42px !important; }
+.key-arrow-btn { width: 28px !important; height: 28px !important; }
+.export-btn { font-size: 13px !important; padding: 7px 12px !important; }
+.master-subgroup { gap: 24px !important; }
+.modal-title { font-size: 18px !important; }
+.help-page p { font-size: 15px !important; }
+.help-page h3 { font-size: 17px !important; }
+
+
+
+/* ===== PENTAGONG V7: V4/V3 glass+gemstone top restored; current clean onyx bottom preserved ===== */
+/* Keep the fixed single logo treatment; do not let the logo tile or duplicate. */
+#logo {
+  width: 390px !important;
+  height: 68px !important;
+  margin-right: 12px !important;
+  flex: 0 0 390px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -99999px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  background: transparent url('pentagong_assets/pentagong_logo_v6.png') left center / contain no-repeat !important;
+  filter: drop-shadow(0 3px 10px rgba(20,130,150,.18)) drop-shadow(0 0 10px rgba(150,255,230,.16)) !important;
+}
+#logo::before, #logo::after { display: none !important; content: none !important; }
+#patch-bar { padding-left: 28px !important; min-height: 82px !important; background-repeat: no-repeat !important; }
+
+/* Preserve only the current V6 bottom-section look. */
+#effects-panel,
+#tempo-panel,
+.delay-tap,
+.effects-half {
+  background-color: rgba(1, 3, 7, .86) !important;
+  background-image:
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.006) 28%, rgba(0,0,0,.36) 100%),
+    url('pentagong_assets/black_onyx_panel_v6_clean.png') !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-position: center center, center center !important;
+  background-size: cover, 100% 100% !important;
+  border: 1px solid rgba(235,250,255,.28) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 20px 45px rgba(0,0,0,.42) !important;
+}
+.delay-tap,
+.effects-half {
+  background-image: linear-gradient(145deg, rgba(255,255,255,.035), rgba(0,0,0,.30)) !important;
+  background-color: rgba(3, 5, 10, .58) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+#effects-panel .section-title,
+#tempo-panel .section-title,
+.tap-title,
+#effects-panel label,
+#tempo-panel label,
+.bpm-label,
+.knob-label {
+  color: #fbfdff !important;
+  text-shadow: 0 2px 5px rgba(0,0,0,.78), 0 0 8px rgba(170,230,255,.16) !important;
+}
+#effects-panel input[type="range"], #tempo-panel input[type="range"] { background: rgba(0,0,0,.72) !important; }
+.bpm-input, .key-display, #effects-panel select, .tap-controls select { background: rgba(0,0,0,.72) !important; border-color: rgba(255,255,255,.32) !important; }
+
+/* Current jade-active play switch and onyx volume knob. */
+.play-toggle {
+  width: 56px !important;
+  height: 32px !important;
+  border-radius: 18px !important;
+  background: #05090d url('pentagong_assets/play_toggle_inactive_v6.png') center center / cover no-repeat !important;
+  border: 1px solid rgba(255,255,255,.46) !important;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.18), inset 0 -7px 14px rgba(0,0,0,.55), 0 6px 16px rgba(0,0,0,.45) !important;
+}
+.play-toggle.active {
+  background: #062015 url('pentagong_assets/play_toggle_active_jade_v6.png') center center / cover no-repeat !important;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.20), inset 0 -7px 14px rgba(0,0,0,.45), 0 0 22px rgba(74,255,178,.68), 0 6px 16px rgba(0,0,0,.45) !important;
+}
+.play-toggle::after {
+  width: 26px !important; height: 26px !important; top: 2px !important; left: 3px !important;
+  background: radial-gradient(circle at 34% 28%, #ffffff 0%, #c9f0ff 14%, #101923 44%, #030509 100%) !important;
+  border: 1px solid rgba(255,255,255,.82) !important;
+}
+.play-toggle.active::after {
+  transform: translateX(23px) !important;
+  background: radial-gradient(circle at 34% 28%, #ffffff 0%, #d4fff4 14%, #162622 44%, #05100b 100%) !important;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.34), inset 0 -6px 10px rgba(0,0,0,.62), 0 0 10px rgba(76,255,180,.42), 0 2px 8px rgba(0,0,0,.55) !important;
+}
+.knob-container, .knob-ring { width: 72px !important; height: 72px !important; }
+.knob-ring {
+  background: conic-gradient(from 225deg, #91ffd8 0deg, #91ffd8 var(--knob-angle,0deg), rgba(8,13,20,.84) var(--knob-angle,0deg), rgba(8,13,20,.84) 270deg, transparent 270deg) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.24) !important;
+}
+.knob-inner {
+  width: 54px !important; height: 54px !important;
+  background: #05070b url('pentagong_assets/onyx_knob.png') center center / cover no-repeat !important;
+  box-shadow: inset 0 2px 7px rgba(255,255,255,.28), inset 0 -9px 16px rgba(0,0,0,.62), 0 3px 12px rgba(0,0,0,.55) !important;
+}
+.knob-indicator { height: 19px !important; width: 4px !important; top: 4px !important; background: linear-gradient(#fff,#a5fff0) !important; box-shadow: 0 0 7px rgba(145,255,216,.72) !important; }
+.knob-label { font-size: 13px !important; letter-spacing: .09em !important; margin-top: 6px !important; font-weight: 900 !important; }
+
 </style>
 </head>
 <body>
