@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FasTrak CSR Workspace — A Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --bg-elevated: #fbf8f2;
+    --ink: #1f2a24;
+    --ink-soft: #5b655e;
+    --ink-softer: #8a938c;
+    --line: #d9d3c7;
+    --line-soft: #e6e0d3;
+    --accent: #2c4a6b;
+    --accent-soft: #6a89a8;
+    --accent-hover: #243d59;
+    --accent-deep: #1a2c43;
+    --dark-bg: #1a231f;
+    --dark-ink: #f5f1ea;
+    --dark-soft: #9ba39c;
+    --green: #4a7c47;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: hidden;
+    font-weight: 400;
+    letter-spacing: -0.003em;
+  }
+
+  /* ======== NAV ======== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    background: rgba(245, 241, 234, 0.78);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    font-size: 12px;
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid rgba(31, 42, 36, 0.06);
+  }
+  nav .logo { font-weight: 600; }
+  nav .meta { color: var(--ink-soft); }
+
+  /* ======== HERO ======== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 14px;
+    letter-spacing: -0.005em;
+    opacity: 0;
+    animation: rise 1s 0.1s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero h1 {
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    max-width: 16ch;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: rise 1.2s 0.25s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero .deck {
+    font-size: clamp(18px, 1.9vw, 22px);
+    color: var(--ink-soft);
+    max-width: 680px;
+    line-height: 1.4;
+    font-weight: 400;
+    letter-spacing: -0.008em;
+    opacity: 0;
+    animation: rise 1.2s 0.45s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 48px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    opacity: 0;
+    animation: rise 1.2s 0.65s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hero-meta strong {
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .hero .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    font-size: 11px;
+    color: var(--ink-softer);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: rise 1s 1s forwards, float 3s 2s ease-in-out infinite;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ======== SECTION BASE ======== */
+  section.panel {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px;
+    position: relative;
+  }
+  .container { width: 100%; max-width: 980px; margin: 0 auto; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal.delay-1 { transition-delay: 0.1s; }
+  .reveal.delay-2 { transition-delay: 0.2s; }
+  .reveal.delay-3 { transition-delay: 0.3s; }
+
+  /* ======== STATEMENT PANEL ======== */
+  .statement { text-align: center; }
+  .statement h2 {
+    font-size: clamp(36px, 5.5vw, 60px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+    max-width: 22ch;
+    margin: 0 auto;
+  }
+  .statement h2 .soft { color: var(--ink-soft); }
+  .statement .sub {
+    margin-top: 28px;
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+  }
+
+  /* ======== BEFORE: ACTUAL DESKTOP SCREENSHOT ======== */
+  .before-section {
+    background: var(--dark-bg);
+    color: var(--dark-ink);
+    padding: 140px 24px;
+    overflow: hidden;
+  }
+
+  .before-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 60px;
+  }
+  .before-header .eyebrow { color: var(--accent-soft); }
+  .before-header h2 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--dark-ink);
+  }
+  .before-header p {
+    margin-top: 18px;
+    font-size: 17px;
+    color: var(--dark-soft);
+    line-height: 1.5;
+  }
+
+  .screenshot-wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(245, 241, 234, 0.08);
+    position: relative;
+  }
+  .screenshot-wrap img {
+    width: 100%;
+    display: block;
+  }
+
+  .annotations {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1080px;
+    margin: 40px auto 0;
+  }
+  .annotation {
+    padding: 20px;
+    background: rgba(245, 241, 234, 0.04);
+    border: 1px solid rgba(245, 241, 234, 0.08);
+    border-radius: 10px;
+  }
+  .annotation .num {
+    color: var(--accent-soft);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .annotation .title {
+    color: var(--dark-ink);
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+  }
+  .annotation .desc {
+    color: var(--dark-soft);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ======== CONSTRAINTS ======== */
+  .constraints {
+    padding: 140px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .constraints-header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 60px;
+  }
+  .constraints-header h2 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+  .constraints-header h2 .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .constraints-header p {
+    margin-top: 18px;
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .constraint-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  .constraint-card {
+    background: var(--bg-elevated);
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+  }
+
+  .constraint-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(44, 74, 107, 0.1);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .constraint-card h4 {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .constraint-card p {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    letter-spacing: -0.003em;
+  }
+
+  /* ======== WHAT WENT IN ======== */
+  .features {
+    padding: 140px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .features-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 60px;
+  }
+  .features-header h2 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+  .features-header p {
+    margin-top: 18px;
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .feature-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .feature-card .label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .feature-card h4 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+  .feature-card p {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ======== LIVE TOOL ======== */
+  .demo-section {
+    background: var(--dark-bg);
+    color: var(--dark-ink);
+    padding: 140px 24px;
+  }
+
+  .demo-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 56px;
+  }
+  .demo-header .eyebrow { color: var(--accent-soft); }
+  .demo-header h2 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--dark-ink);
+  }
+  .demo-header p {
+    margin-top: 18px;
+    font-size: 17px;
+    color: var(--dark-soft);
+    line-height: 1.5;
+  }
+
+  .demo-frame {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--bg-elevated);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5), 0 0 0 1px rgba(245, 241, 234, 0.06);
+  }
+
+  .demo-titlebar {
+    background: linear-gradient(to bottom, #ebe4d6, #ddd4c2);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #c8c0ae;
+  }
+  .demo-dot { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+  .demo-dot:nth-child(2) { background: #febc2e; }
+  .demo-dot:nth-child(3) { background: #28c840; }
+  .demo-filename {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  /* ============ EMBEDDED CSR TOOL — scoped under .tool-embed ============ */
+  .tool-embed {
+    --ref-tab: #fff;
+    --sub-btn: #858585;
+    --app-blue: var(--accent);
+    padding: 8px;
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  }
+  .tool-embed * { font-size: 12px; box-sizing: border-box; }
+  .tool-embed .header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+  }
+  .tool-embed h3 {
+    font-size: 12px; margin: 0; letter-spacing: 0.06em; text-transform: uppercase;
+    font-weight: 600; color: var(--ink);
+  }
+  .tool-embed .app-layout {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px; align-items: start;
+  }
+  .tool-embed .section {
+    background: #fbf8f2; padding: 6px 8px; margin-bottom: 6px;
+    border: 1px solid var(--line); border-radius: 5px;
+  }
+  .tool-embed .section > strong {
+    display: block; margin-bottom: 5px;
+    font-size: 9px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+  }
+  .tool-embed .row {
+    display: grid; grid-template-columns: 80px 1fr 22px 22px 22px;
+    gap: 3px; align-items: center; margin-bottom: 3px;
+  }
+  .tool-embed .name-row { grid-template-columns: 100px 1fr 22px; }
+  .tool-embed .row:last-child { margin-bottom: 0; }
+  .tool-embed label {
+    font-size: 9px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .tool-embed input[type="text"], .tool-embed textarea, .tool-embed select {
+    width: 100%; padding: 3px 5px; border-radius: 3px;
+    border: 1px solid var(--line); background: white; color: var(--ink);
+    font: inherit; outline: none;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+  }
+  .tool-embed input:focus, .tool-embed textarea:focus, .tool-embed select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(44, 74, 107, 0.15);
+  }
+  .tool-embed select { height: 22px; }
+  .tool-embed button {
+    padding: 2px 6px; cursor: pointer; background: #fbf8f2;
+    border: 1px solid var(--line); border-radius: 3px; color: var(--ink);
+    font: inherit; font-weight: 500;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    font-family: -apple-system, "Segoe UI", sans-serif;
+  }
+  .tool-embed button:hover { background: #efe9dc; border-color: var(--ink-softer); }
+  .tool-embed button.toggle.active {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+  .tool-embed button.special.used {
+    background: var(--accent-deep); color: white; border-color: var(--accent-deep);
+  }
+  .tool-embed .icon-copy, .tool-embed .x { width: 22px; padding: 2px; text-align: center; }
+  .tool-embed .add { width: 22px; padding: 2px; font-weight: 600; }
+  .tool-embed .button-grid { display: flex; flex-wrap: wrap; gap: 3px; }
+  .tool-embed .resolution-group {
+    display: grid; grid-template-columns: 56px 1fr; gap: 3px;
+    align-items: start; margin-bottom: 3px;
+  }
+  .tool-embed .resolution-group:last-child { margin-bottom: 0; }
+  .tool-embed .resolution-group-title {
+    font-weight: 600; font-size: 9px; line-height: 16px;
+    color: var(--ink-soft); white-space: nowrap;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .tool-embed .resolution-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
+  .tool-embed .resolution-buttons button {
+    font-size: 10px; padding: 1px 4px; line-height: 1.2; min-height: 18px;
+  }
+  .tool-embed #acct-block { margin-bottom: 0; }
+  .tool-embed #acct-block .row { grid-template-columns: 70px 1fr 22px 14px 22px; }
+  .tool-embed #acct-block .add { width: 14px; padding: 2px 0; }
+  .tool-embed #other { height: 50px; resize: none; font-family: -apple-system, "Segoe UI", sans-serif; }
+  .tool-embed #output {
+    height: 180px; resize: none; font-size: 10px; line-height: 1.4;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: #f0eadb;
+  }
+  .tool-embed .notes-controls {
+    display: flex; justify-content: flex-end; margin-top: 6px;
+  }
+  .tool-embed .generate-hidden { display: none; }
+  .tool-embed button.clear-call {
+    background: transparent; color: var(--ink-soft); border: 1px solid var(--line);
+    font-size: 9px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 3px 9px;
+  }
+
+  /* Calculator */
+  .tool-embed .calc-section.calc-focused {
+    border: 2px solid var(--accent); padding: 5px;
+    background: rgba(44, 74, 107, 0.05);
+  }
+  .tool-embed .calc-display { margin-bottom: 5px; }
+  .tool-embed .calc-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 5px;
+  }
+  .tool-embed .calc-grid button { min-height: 22px; }
+  .tool-embed #calcOperations {
+    height: 80px; resize: none; white-space: pre;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+  }
+
+  /* Date row */
+  .tool-embed .date-line {
+    display: flex; gap: 4px; align-items: center; width: 100%;
+  }
+  .tool-embed .date-line strong { white-space: nowrap; margin-bottom: 0; font-weight: 600; }
+  .tool-embed #ninetyDaysAgo {
+    font-weight: normal; margin-left: auto; color: var(--ink);
+    font-size: 11px;
+  }
+  .tool-embed .date-line button {
+    line-height: 1; padding: 2px 5px; font-size: 12px;
+  }
+
+  /* Reference guide */
+  .tool-embed .footer-label {
+    text-align: center; font-weight: 600; margin-top: 16px; margin-bottom: 6px;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .tool-embed .ref-wrap { position: relative; }
+  .tool-embed .footer, .tool-embed .ref-submenu {
+    display: flex; flex-wrap: wrap; gap: 3px;
+  }
+  .tool-embed .footer {
+    position: relative; z-index: 21;
+    background: #fbf8f2; padding: 6px;
+    border: 1px solid var(--line); border-radius: 5px;
+  }
+  .tool-embed .footer button, .tool-embed .ref-submenu button { flex: 1 0 auto; }
+  .tool-embed .ref-submenu {
+    display: none; position: absolute; left: 0; right: 0;
+    bottom: calc(100% - 1px); z-index: 20;
+    background: var(--ref-tab); padding: 6px;
+    border: 1px solid #9f9f9f; border-bottom: 0;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,.12);
+  }
+  .tool-embed .ref-submenu.show { display: flex; }
+  .tool-embed .ref-submenu button {
+    background: var(--sub-btn); color: white; border-color: var(--sub-btn);
+  }
+  .tool-embed .footer button.ref-active {
+    background: var(--ref-tab); border-color: #9f9f9f;
+    border-top-color: var(--ref-tab); border-radius: 0 0 5px 5px;
+    position: relative; z-index: 25; font-weight: 600;
+    box-shadow: 0 -7px 0 var(--ref-tab); color: var(--ink);
+  }
+  .tool-embed .footer button.ref-active:before {
+    content: ""; position: absolute; left: -1px; right: -1px;
+    top: -9px; height: 10px; background: var(--ref-tab);
+    border-left: 1px solid #9f9f9f; border-right: 1px solid #9f9f9f;
+  }
+
+  /* Popup */
+  .tool-embed .popup-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.08); z-index: 999;
+    align-items: center; justify-content: center; padding: 12px;
+    pointer-events: none;
+  }
+  .tool-embed .popup-backdrop.show { display: flex; }
+  .tool-embed .popup-box {
+    background: #fbf8f2; border: 1px solid #999; border-radius: 5px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25); min-width: 220px;
+    max-width: 560px; padding: 10px; cursor: pointer; pointer-events: auto;
+  }
+  .tool-embed .popup-columns {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+  .tool-embed .popup-box strong, .tool-embed .popup-columns strong {
+    display: block; margin-bottom: 8px; font-size: 11px;
+  }
+  .tool-embed .popup-box div { line-height: 1.5; }
+  .tool-embed .popup-columns div { line-height: 1.35; white-space: normal; font-size: 11px; }
+
+  /* Calendar */
+  .tool-embed .calendar-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.18); z-index: 2000;
+    align-items: center; justify-content: center; padding: 12px;
+  }
+  .tool-embed .calendar-backdrop.show { display: flex; }
+  .tool-embed .calendar-card {
+    width: 282px; background: white; border: 1px solid #999;
+    border-radius: 6px; box-shadow: 0 4px 18px rgba(0,0,0,.28); padding: 8px;
+  }
+  .tool-embed .calendar-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--accent); color: white; border-radius: 4px;
+    padding: 5px 6px; font-weight: 600;
+  }
+  .tool-embed .calendar-header button {
+    background: var(--accent); border: 1px solid rgba(255,255,255,.7);
+    color: white; border-radius: 3px; min-width: 26px; font-weight: 600;
+  }
+  .tool-embed .calendar-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 2px; margin-top: 7px; text-align: center;
+  }
+  .tool-embed .calendar-dow {
+    font-weight: 600; background: #eee; border-radius: 3px; padding: 4px 0;
+  }
+  .tool-embed .calendar-day, .tool-embed .calendar-empty {
+    min-height: 25px; border: 1px solid #ddd; border-radius: 3px;
+    display: flex; align-items: center; justify-content: center; background: white;
+  }
+  .tool-embed .calendar-empty { background: #fafafa; border-color: #eee; }
+  .tool-embed .calendar-day.today { border-color: var(--accent); font-weight: 600; }
+  .tool-embed .calendar-day.ninety {
+    background: rgba(44, 74, 107, 0.1); border-color: var(--accent); font-weight: 600;
+  }
+  .tool-embed .calendar-close { float: right; margin-top: 7px; }
+
+  .demo-caption {
+    text-align: center;
+    margin-top: 36px;
+    font-size: 13px;
+    color: var(--dark-soft);
+    letter-spacing: -0.005em;
+  }
+
+  /* ======== STATS ======== */
+  .stats-panel {
+    padding: 140px 24px;
+    text-align: center;
+  }
+  .stats-panel h2 {
+    font-size: clamp(34px, 4.5vw, 52px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+    max-width: 20ch;
+    margin: 0 auto 80px;
+  }
+  .stats-panel h2 .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .stat-item .figure {
+    font-size: clamp(52px, 6.5vw, 88px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .stat-item .figure .unit {
+    font-size: 0.42em;
+    vertical-align: top;
+    margin-left: 2px;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .stat-item .figure .prefix {
+    font-size: 0.6em;
+    vertical-align: middle;
+    margin-right: 4px;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .stat-item .delta {
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+    margin-bottom: 12px;
+    letter-spacing: -0.005em;
+  }
+  .stat-item .label {
+    font-size: 15px;
+    color: var(--ink-soft);
+    letter-spacing: -0.003em;
+    max-width: 260px;
+    margin: 0 auto;
+    line-height: 1.45;
+  }
+
+  /* ======== QA QUOTE ======== */
+  .qa-quote {
+    padding: 140px 24px;
+    background: var(--dark-bg);
+    color: var(--dark-ink);
+  }
+  .qa-quote-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .qa-quote .eyebrow { color: var(--accent-soft); }
+  .qa-quote blockquote {
+    font-size: clamp(26px, 3.4vw, 38px);
+    line-height: 1.3;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--dark-ink);
+    margin: 20px 0 24px;
+  }
+  .qa-quote blockquote .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-soft);
+  }
+  .qa-quote p {
+    font-size: 17px;
+    color: var(--dark-soft);
+    line-height: 1.55;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ======== TECHNICAL DETAIL ======== */
+  .technical {
+    padding: 140px 24px;
+  }
+  .tech-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .tech-copy .eyebrow { color: var(--accent); }
+  .tech-copy h2 {
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 22px;
+  }
+  .tech-copy p {
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    margin-bottom: 18px;
+  }
+  .code-card {
+    background: var(--dark-bg);
+    border-radius: 14px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #d8d3c7;
+    overflow-x: auto;
+  }
+  .code-card .kw { color: #a8c4e3; }
+  .code-card .fn { color: #c4d4b5; }
+  .code-card .str { color: #d8c88a; }
+  .code-card .com { color: #6e766e; font-style: italic; }
+
+  /* ======== CLOSING ======== */
+  .closing {
+    padding: 180px 24px;
+    text-align: center;
+  }
+  .closing h2 {
+    font-size: clamp(40px, 6vw, 68px);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin: 0 auto 28px;
+  }
+  .closing h2 .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .closing p {
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.45;
+    letter-spacing: -0.008em;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 24px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 980px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.008em;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .cta:hover { background: #2a382f; transform: scale(1.02); }
+
+  footer {
+    padding: 36px 24px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-softer);
+    letter-spacing: -0.005em;
+  }
+
+  @media (max-width: 820px) {
+    nav { padding: 0 20px; height: 44px; }
+    nav .meta { display: none; }
+    .hero-meta { flex-direction: column; gap: 20px; }
+    .constraint-grid, .feature-grid, .annotations { grid-template-columns: 1fr; }
+    .tech-container { grid-template-columns: 1fr; gap: 40px; }
+    .stats-grid { grid-template-columns: 1fr; gap: 60px; }
+    .tool-embed .app-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Case Study</div>
+  <div class="meta">FasTrak CSR Workspace · 2026</div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="eyebrow">FasTrak · Conduent · CSR Workspace</div>
+  <h1>A workspace that fits in a corner of the screen.</h1>
+  <p class="deck">An offline HTML tool that replaced a scatter of sticky notes, a calculator, a calendar app, and a reference PDF — all within a single locked-down browser tab.</p>
+  <div class="hero-meta">
+    <div><strong>Role</strong>Design & Development</div>
+    <div><strong>Timeline</strong>2 Weeks · April 2026</div>
+    <div><strong>Users</strong>FasTrak CSR Queue</div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ============ PROBLEM STATEMENT ============ -->
+<section class="panel statement">
+  <div class="container">
+    <h2 class="reveal">A typical CSR screen had four sticky notes, a calculator, a calendar, <span class="soft">and a 20-page PDF.</span></h2>
+    <p class="sub reveal delay-1">Every call started with a hunt — for the right script, the right reference page, or whichever sticky note happened to have today's confirmation format.</p>
+  </div>
+</section>
+
+<!-- ============ BEFORE: REAL SCREENSHOT ============ -->
+<section class="before-section">
+  <div class="before-header">
+    <div class="eyebrow">Before</div>
+    <h2 class="reveal">A real CSR desktop, mid-call.</h2>
+    <p class="reveal delay-1">Four sticky notes for scripts and authorization codes, the Windows calendar and calculator, and a separate reference PDF — all visible at once, all competing for attention.</p>
+  </div>
+
+  <div class="screenshot-wrap reveal delay-2">
+    <img src="messy_desktop.png" alt="The CSR desktop before the redesign — multiple sticky notes, calculator, calendar, and a reference PDF tiled across the screen." />
+  </div>
+
+  <div class="annotations">
+    <div class="annotation reveal">
+      <div class="num">01</div>
+      <div class="title">Three sticky notes</div>
+      <div class="desc">Authorization codes, payment scripts, and resolution snippets — each in its own window, with no shared format.</div>
+    </div>
+    <div class="annotation reveal delay-1">
+      <div class="num">02</div>
+      <div class="title">Calendar & calculator</div>
+      <div class="desc">Two more open apps just to compute the 90-days-ago date and the occasional bridge-toll math.</div>
+    </div>
+    <div class="annotation reveal delay-2">
+      <div class="num">03</div>
+      <div class="title">17-page PDF</div>
+      <div class="desc">The Express Lanes reference guide, opened from a downloads folder each time the knowledge base was slow or unavailable.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSTRAINTS ============ -->
+<section class="constraints">
+  <div class="constraints-header">
+    <div class="eyebrow reveal">The constraints</div>
+    <h2 class="reveal delay-1">What made this <span class="serif">interesting.</span></h2>
+    <p class="reveal delay-2">The usual options were off the table, which shaped what a good answer looked like.</p>
+  </div>
+
+  <div class="constraint-grid">
+    <div class="constraint-card reveal">
+      <div class="constraint-icon">$</div>
+      <h4>No budget</h4>
+      <p>No software procurement, no contractors. The fix had to come from within the team, using tools already on hand.</p>
+    </div>
+    <div class="constraint-card reveal delay-1">
+      <div class="constraint-icon">⊘</div>
+      <h4>No cloud, no network</h4>
+      <p>No syncing, no analytics, no remote fonts. The tool needed to work entirely offline — and stay working when the knowledge base went down.</p>
+    </div>
+    <div class="constraint-card reveal delay-2">
+      <div class="constraint-icon">⌘</div>
+      <h4>No install rights</h4>
+      <p>CSR workstations were locked down. Whatever I built had to run from a regular file in the default browser.</p>
+    </div>
+    <div class="constraint-card reveal delay-3">
+      <div class="constraint-icon">⎋</div>
+      <h4>No saved data</h4>
+      <p>Privacy review meant no storage of any kind — no localStorage, no filesystem, not even autofill. Each note had to exist for one call and disappear.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT WENT IN ============ -->
+<section class="features">
+  <div class="features-header">
+    <div class="eyebrow reveal">What went in</div>
+    <h2 class="reveal delay-1">Four scattered tools, one panel.</h2>
+    <p class="reveal delay-2">Each feature replaced something CSRs were already doing — but on the desktop, in a different app, with no shared format.</p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card reveal">
+      <div class="label">Notes</div>
+      <h4>Structured note-taking</h4>
+      <p>One panel with every required field — caller, account, authorization, reason, resolution. The generated output is identical every time, which is what made QA scoring objective.</p>
+    </div>
+    <div class="feature-card reveal delay-1">
+      <div class="label">Calendar</div>
+      <h4>90-days-ago, computed</h4>
+      <p>A common reference point for disputes and refunds. The date is calculated on page load and a one-click calendar opens to that month, highlighted.</p>
+    </div>
+    <div class="feature-card reveal delay-2">
+      <div class="label">Calculator</div>
+      <h4>Inline math with history</h4>
+      <p>Standard four-function math plus a running log of every calculation. Keyboard input works when the panel is focused, so a CSR can stay on keys.</p>
+    </div>
+    <div class="feature-card reveal delay-3">
+      <div class="label">Reference</div>
+      <h4>Tabbed reference, fully offline</h4>
+      <p>Express Lanes exit codes for every Bay Area corridor, in two columns by direction. Loads in a second, and keeps working when the knowledge base doesn't.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE TOOL ============ -->
+<section class="demo-section">
+  <div class="demo-header">
+    <div class="eyebrow">Try it</div>
+    <h2 class="reveal">The actual tool, embedded.</h2>
+    <p class="reveal delay-1">This is the same HTML CSRs use. Fill in fields, toggle resolutions, use the calculator, open the calendar, or browse Express Lanes. Nothing leaves your browser.</p>
+  </div>
+
+  <div class="demo-frame reveal delay-2">
+    <div class="demo-titlebar">
+      <div class="demo-dot"></div>
+      <div class="demo-dot"></div>
+      <div class="demo-dot"></div>
+      <div class="demo-filename">csr-notes.html — local file</div>
+    </div>
+    <div class="tool-embed" id="toolEmbed">
+      <div class="header">
+        <h3>Call Notes</h3>
+        <button class="clear-call" onclick="clearCall()">Clear call</button>
+      </div>
+
+      <div class="app-layout">
+        <div>
+          <div class="section">
+            <div class="row name-row">
+              <label>Caller name</label>
+              <input id="callerName" type="text" autocomplete="off" data-lpignore="true" spellcheck="false">
+              <button class="icon-copy" onclick="copyField(this)" title="Copy">📋</button>
+            </div>
+            <div class="row name-row">
+              <label>Account name</label>
+              <input id="accountName" type="text" autocomplete="off" data-lpignore="true" spellcheck="false">
+              <button class="icon-copy" onclick="copyField(this)" title="Copy">📋</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <strong>Authorization</strong>
+            <div id="AUTHORIZATION" class="button-grid"></div>
+          </div>
+
+          <div class="section">
+            <strong>Reason for call</strong>
+            <select id="REASON">
+              <option value="">Select reason…</option>
+            </select>
+          </div>
+
+          <div class="section">
+            <strong>Call resolution</strong>
+            <div id="RESOLUTION"></div>
+          </div>
+
+          <div class="section" id="acct-block">
+            <div id="ACCT"></div>
+            <div id="LP"></div>
+            <div id="INV"></div>
+            <div id="VIO"></div>
+            <div id="SPECIAL"></div>
+          </div>
+
+          <div class="section">
+            <strong>Other</strong>
+            <textarea id="other" autocomplete="off" data-lpignore="true" spellcheck="false"></textarea>
+          </div>
+        </div>
+
+        <div class="notes-panel">
+          <div class="section">
+            <strong>Generated note</strong>
+            <textarea id="output" readonly></textarea>
+            <div class="notes-controls">
+              <button onclick="copyNotes()">Copy notes</button>
+            </div>
+          </div>
+
+          <div class="section calc-section" id="calcSection" tabindex="0">
+            <strong>Calculator</strong>
+            <input id="calcDisplay" class="calc-display" type="text" autocomplete="off">
+            <div class="calc-grid">
+              <button onclick="calcPress('7')">7</button>
+              <button onclick="calcPress('8')">8</button>
+              <button onclick="calcPress('9')">9</button>
+              <button onclick="calcClear()">C</button>
+              <button onclick="calcPress('4')">4</button>
+              <button onclick="calcPress('5')">5</button>
+              <button onclick="calcPress('6')">6</button>
+              <button onclick="calcPress('+')">+</button>
+              <button onclick="calcPress('1')">1</button>
+              <button onclick="calcPress('2')">2</button>
+              <button onclick="calcPress('3')">3</button>
+              <button onclick="calcPress('-')">−</button>
+              <button onclick="calcPress('0')">0</button>
+              <button onclick="calcPress('.')">.</button>
+              <button onclick="calcBackspace()">⌫</button>
+              <button onclick="calcEquals()">=</button>
+            </div>
+            <textarea id="calcOperations" readonly></textarea>
+          </div>
+
+          <div class="section">
+            <div class="date-line">
+              <strong>90 days ago:</strong>
+              <span id="ninetyDaysAgo"></span>
+              <button id="calendarIcon" title="Open calendar">📅</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-label">Reference Guide</div>
+      <div class="ref-wrap">
+        <div id="refSubmenu" class="ref-submenu"></div>
+        <div class="section footer" id="primaryRef"></div>
+      </div>
+
+      <div id="popupBackdrop" class="popup-backdrop">
+        <div id="popupBox" class="popup-box" onclick="hidePopup();event.stopPropagation()"></div>
+      </div>
+      <div id="calendarBackdrop" class="calendar-backdrop">
+        <div class="calendar-card" onclick="event.stopPropagation()">
+          <div class="calendar-header">
+            <button id="calPrev">◀</button>
+            <span id="calMonthLabel"></span>
+            <button id="calNext">▶</button>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+          <button class="calendar-close" onclick="hideCalendar()">Close</button>
+          <div style="clear:both"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="demo-caption reveal">The Reference Guide currently has Express Lanes populated. Other tabs are placeholders for now.</p>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="stats-panel">
+  <div class="container">
+    <h2 class="reveal">What changed <span class="serif">after rollout.</span></h2>
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="figure"><span class="prefix">−</span><span id="count-1">0</span><span class="unit">%</span></div>
+        <div class="delta">average handle time</div>
+        <div class="label">Calls finished faster, with less time spent hunting for snippets and references.</div>
+      </div>
+      <div class="stat-item reveal delay-1">
+        <div class="figure"><span class="prefix">+</span><span id="count-2">0</span><span class="unit">%</span></div>
+        <div class="delta">customer satisfaction</div>
+        <div class="label">Faster, more consistent calls translated directly into post-call survey scores.</div>
+      </div>
+      <div class="stat-item reveal delay-2">
+        <div class="figure">~<span id="count-3">0</span><span class="unit">%</span></div>
+        <div class="delta">of the screen</div>
+        <div class="label">Down from a tiled mess across the desktop to a single sidebar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QA QUOTE ============ -->
+<section class="qa-quote">
+  <div class="qa-quote-inner">
+    <div class="eyebrow reveal">The unplanned win</div>
+    <blockquote class="reveal delay-1">
+      The format also gave QA <span class="serif">a consistent template</span> to score CSRs against — something the team had been working around for years.
+    </blockquote>
+    <p class="reveal delay-2">Because every generated note shares the same structure, reviewers can compare like with like, instead of parsing whatever each CSR happened to type that day.</p>
+  </div>
+</section>
+
+<!-- ============ TECHNICAL DETAIL ============ -->
+<section class="technical">
+  <div class="tech-container">
+    <div class="tech-copy">
+      <div class="eyebrow reveal">How it works</div>
+      <h2 class="reveal delay-1">Privacy built into the structure.</h2>
+      <p class="reveal delay-2">The whole workspace is one HTML file with no dependencies and no build step. Fields are rebuilt on every page load, autofill is disabled at the attribute level, and there's no persistence layer to begin with.</p>
+      <p class="reveal delay-3">Because nothing is stored, there's nothing to leak. And because nothing is fetched, nothing breaks when the network does.</p>
+    </div>
+    <div class="code-card reveal delay-2">
+<span class="com">// Disable autofill and persistence on every input.</span>
+<span class="kw">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">'input, textarea'</span>)
+  .<span class="fn">forEach</span>(el =&gt; {
+    el.<span class="fn">setAttribute</span>(<span class="str">'autocomplete'</span>, <span class="str">'off'</span>);
+    el.<span class="fn">setAttribute</span>(<span class="str">'data-lpignore'</span>, <span class="str">'true'</span>);
+    el.<span class="fn">setAttribute</span>(<span class="str">'spellcheck'</span>, <span class="str">'false'</span>);
+  });
+
+<span class="com">// Block network calls at the primitive level.</span>
+<span class="kw">if</span> (<span class="kw">typeof</span> fetch !== <span class="str">'undefined'</span>) {
+  <span class="kw">window</span>.fetch = () =&gt; {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Network disabled'</span>);
+  };
+}</div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <div class="container">
+    <h2 class="reveal">Sometimes the right tool<br><span class="serif">is the small one.</span></h2>
+    <p class="reveal delay-1">The constraints weren't obstacles so much as a specification — they pointed fairly directly at this kind of answer.</p>
+    <a href="#" class="cta reveal delay-2">See more of my work →</a>
+  </div>
+</section>
+
+<footer>
+  © 2026
+</footer>
+
+<script>
+  // ---- Reveal on scroll ----
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ---- Stat counters ----
+  function animateCount(id, target) {
+    const el = document.getElementById(id);
+    const duration = 1800;
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.floor(target * eased);
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  const statsObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.done) {
+        entry.target.dataset.done = 'true';
+        animateCount('count-1', 10);
+        animateCount('count-2', 5);
+        animateCount('count-3', 33);
+      }
+    });
+  }, { threshold: 0.4 });
+  statsObs.observe(document.querySelector('.stats-panel'));
+
+  /* ============================================================
+     EMBEDDED TOOL — ported from CSR_TOOL_regrouped.html
+     Scoped to #toolEmbed; minor adjustments to avoid global IDs.
+     Reference guide only shows EXPRESS LANES (others removed).
+     ============================================================ */
+  (function(){
+    const root = document.getElementById('toolEmbed');
+    if (!root) return;
+    const $ = (id) => root.querySelector('#' + id);
+
+    const authBtns = ['Acct','Addr','Email','CQ','LP','PIN','Tag','Tel','INV','VIO','Xing','New Acct'];
+    const reasons = ['Account Closure','Account Inquiry','Account New Acct Set Up','Account Update','BATA - Inquiry/Dispute','BATA - Invoice/Violation Payment','GGB - Inquiry/Dispute','GGB - Invoice/Violation Payment','V101','S101','237','A580','B680','680','880','80','DMV Hold / Collections','Payment Plan'];
+    const specialResolution = ['LP Added: ','LP Removed: ','Replenish','Paid INV','Paid VIO','Payment CNF# ','Please Send Abstract To:'];
+    const repeatSpecial = new Set(['Paid INV','Paid VIO','Replenish','LP Added: ','LP Removed: ']);
+    const resetSpecial = new Set(['Paid INV','Paid VIO','Replenish','LP Added: ','LP Removed: ']);
+    const specialField = {
+      'LP Added: ':{label:'LP Added:',value:''},
+      'LP Removed: ':{label:'LP Removed:',value:''},
+      'Replenish':{label:'Replenish:',value:'CNF# '},
+      'Payment CNF# ':{label:'Payment:',value:'CNF# '},
+      'Paid INV':{label:'Paid INV:',value:'CNF# '},
+      'Paid VIO':{label:'Paid VIO:',value:'CNF# '}
+    };
+
+    function makeBtn(t, cls, fn){
+      const b = document.createElement('button');
+      b.textContent = t;
+      b.className = cls || '';
+      b.onclick = fn;
+      return b;
+    }
+
+    // Authorization toggles
+    const AUTH = $('AUTHORIZATION');
+    authBtns.forEach(t => AUTH.appendChild(makeBtn(t, 'toggle', (e) => {
+      e.target.classList.toggle('active');
+      generateNotes();
+    })));
+
+    // Reason dropdown
+    const REASON = $('REASON');
+    reasons.forEach(t => {
+      const o = document.createElement('option');
+      o.value = o.textContent = t;
+      REASON.appendChild(o);
+    });
+
+    // Resolution groups
+    const RESOLUTION = $('RESOLUTION');
+    const resolutionGroups = [
+      {label:'Acct',items:['Acct Closed','Acct Opened','Plate Change','Updated CC','Updated Addr','Verified Acct Bal','Verified Addr','Verified LPs','Profile Printed']},
+      {label:'Tags/LPs',items:['Tag Deactivated','Tag Ordered','LP Added: ','LP Removed: ']},
+      {label:'Payments',items:['Paid INV','Paid VIO','Replenish']},
+      {label:'Transfers',items:['PP Q - Cold Xfr','PP Q - Warm Xfr','Dismissal Letter','Please Send Abstract To:']},
+      {label:'Educ',items:['Educ: Pay By Phone, Web, Acct','Agreed To OTW']}
+    ];
+
+    function makeResolutionButton(t){
+      return makeBtn(t, specialResolution.includes(t) ? 'special' : 'toggle', (e) => {
+        if (specialResolution.includes(t)) {
+          handleSpecialResolution(t);
+          if (t !== 'Please Send Abstract To:') e.target.classList.add('used');
+        } else {
+          e.target.classList.toggle('active');
+        }
+        generateNotes();
+      });
+    }
+
+    resolutionGroups.forEach(g => {
+      const wrap = document.createElement('div');
+      wrap.className = 'resolution-group';
+      const label = document.createElement('div');
+      label.className = 'resolution-group-title';
+      label.textContent = g.label;
+      const buttons = document.createElement('div');
+      buttons.className = 'resolution-buttons';
+      g.items.forEach(t => buttons.appendChild(makeResolutionButton(t)));
+      wrap.appendChild(label);
+      wrap.appendChild(buttons);
+      RESOLUTION.appendChild(wrap);
+    });
+
+    function escapeAttr(v){
+      return String(v).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    }
+
+    function makeInline(group, first=false, value='', customLabel='', targetId='', specialKey='', afterEl=null){
+      const r = document.createElement('div');
+      r.className = 'row';
+      if (targetId === 'SPECIAL') r.classList.add('special-row');
+      if (specialKey) r.dataset.specialKey = specialKey;
+      r.innerHTML = `<label>${escapeAttr(customLabel || (first ? group + ':' : ''))}</label>` +
+        `<input type="text" value="${escapeAttr(value)}" autocomplete="off" data-lpignore="true" spellcheck="false">` +
+        `<button class="icon-copy" onclick="window.__csr.copyField(this)" title="Copy">📋</button>` +
+        `<button class="add" onclick="window.__csr.addRowFromButton(this,'${group}')">+</button>` +
+        `<button class="x" onclick="window.__csr.removeRow(this,${first})">✕</button>`;
+      const parent = $(targetId || group);
+      if (afterEl && afterEl.parentElement === parent) parent.insertBefore(r, afterEl.nextSibling);
+      else parent.appendChild(r);
+      return r;
+    }
+
+    function addRow(g){ makeInline(g, false); generateNotes(); }
+    function addRowFromButton(btn, g){
+      const key = btn.parentElement.dataset.specialKey;
+      if (key && repeatSpecial.has(key)) addSpecialField(key, btn.parentElement);
+      else addRow(g);
+    }
+    function handleSpecialResolution(t){
+      if (t === 'Please Send Abstract To:') {
+        const other = $('other');
+        other.value += (other.value ? '\n' : '') + t;
+        return;
+      }
+      addSpecialField(t);
+    }
+    function addSpecialField(t, afterEl=null){
+      const c = specialField[t] || {label:t,value:''};
+      if (!afterEl && (t === 'LP Added: ' || t === 'LP Removed: ')) {
+        const rows = [...root.querySelectorAll(`#SPECIAL .row[data-special-key="${CSS.escape(t)}"]`)];
+        afterEl = rows.at(-1) || null;
+      }
+      makeInline('SPECIAL', false, c.value, c.label, 'SPECIAL', t, afterEl);
+    }
+    function removeRow(btn, first){
+      const r = btn.parentElement;
+      const key = r.dataset.specialKey;
+      if (first) r.querySelector('input').value = '';
+      else r.remove();
+      if (key && resetSpecial.has(key) && ![...root.querySelectorAll('#SPECIAL .row')].some(x => x.dataset.specialKey === key)) {
+        [...root.querySelectorAll('#RESOLUTION .special')].find(b => b.textContent === key)?.classList.remove('used');
+      }
+      generateNotes();
+    }
+    function copyField(btn){
+      navigator.clipboard.writeText(btn.previousElementSibling.value);
+    }
+    function copyNotes(){
+      navigator.clipboard.writeText($('output').value);
+    }
+    function clearCall(){
+      root.querySelectorAll('input, textarea').forEach(e => e.value = '');
+      REASON.value = '';
+      root.querySelectorAll('.toggle.active, .special.used').forEach(b => b.classList.remove('active','used'));
+      ['ACCT','LP','INV','VIO'].forEach(g => {
+        $(g).innerHTML = '';
+        makeInline(g, true);
+      });
+      $('SPECIAL').innerHTML = '';
+      generateNotes();
+    }
+    function generateNotes(copy=false){
+      let o = '';
+      const caller = $('callerName').value;
+      const acct = $('accountName').value;
+      const auth = [...root.querySelectorAll('#AUTHORIZATION .active')];
+      const reason = REASON.value;
+      const active = [...root.querySelectorAll('#RESOLUTION .toggle.active')];
+      const otherLines = $('other').value.split('\n').filter(Boolean);
+      const gv = {};
+      ['ACCT','LP','INV','VIO'].forEach(g => gv[g] = [...root.querySelectorAll(`#${g} input`)].map(i => i.value).filter(Boolean));
+      const rows = [...root.querySelectorAll('#SPECIAL .row')].map(r => ({
+        key: r.dataset.specialKey || '',
+        label: r.querySelector('label').textContent.trim(),
+        value: r.querySelector('input').value.trim()
+      })).filter(r => r.value);
+      const lpA = rows.filter(r => r.key === 'LP Added: ').map(r => r.value);
+      const lpR = rows.filter(r => r.key === 'LP Removed: ').map(r => r.value);
+      const sp = rows.filter(r => r.key !== 'LP Added: ' && r.key !== 'LP Removed: ');
+      const hasVals = Object.values(gv).some(a => a.length) || rows.length;
+      const hasRes = active.length || hasVals || otherLines.length;
+      const hasAny = caller || acct || auth.length || reason || hasRes;
+      if (caller) o += `CALLER NAME: ${caller}\n\n`;
+      if (acct) o += `ACCOUNT NAME: ${acct}\n\n`;
+      if (auth.length) o += `AUTHORIZATION: ${auth.map(b => b.textContent).join(' / ')}\n\n`;
+      if (reason) o += `REASON FOR CALL: ${reason}\n\n`;
+      if (hasRes) {
+        o += 'CALL RESOLUTION:\n\n';
+        active.forEach(b => o += `-${b.textContent}\n`);
+        otherLines.forEach(l => o += `-${l}\n`);
+        if (otherLines.length || active.length) o += '\n';
+      }
+      ['ACCT','LP','INV','VIO'].forEach(g => {
+        if (gv[g].length) o += `${g}: ${gv[g].join(', ')}\n`;
+      });
+      if (lpA.length) o += `LP Added: ${lpA.join(', ')}\n`;
+      if (lpR.length) o += `LP Removed: ${lpR.join(', ')}\n`;
+      sp.forEach(r => o += `${r.label} ${r.value}\n`);
+      if (hasAny) o += '\n-----------------------\n';
+      $('output').value = o;
+      if (copy) navigator.clipboard.writeText(o);
+    }
+
+    // Init inline rows
+    ['ACCT','LP','INV','VIO'].forEach(g => makeInline(g, true));
+
+    // Calculator
+    const calcSection = $('calcSection'), calcDisplay = $('calcDisplay'), calcOperations = $('calcOperations');
+    let calcFocused = false, lastRepeat = null, lastWasEquals = false;
+    calcSection.addEventListener('click', (e) => {
+      calcFocused = true;
+      calcSection.classList.add('calc-focused');
+      if (e.target !== calcDisplay) calcSection.focus();
+    });
+    document.addEventListener('click', (e) => {
+      if (!calcSection.contains(e.target)) {
+        calcFocused = false;
+        calcSection.classList.remove('calc-focused');
+      }
+    });
+    function replaceCalcSelection(text){
+      const d = calcDisplay;
+      const s = d.selectionStart ?? d.value.length;
+      const en = d.selectionEnd ?? d.value.length;
+      d.value = d.value.slice(0, s) + text + d.value.slice(en);
+      d.setSelectionRange(s + text.length, s + text.length);
+    }
+    function calcPress(v){
+      lastWasEquals = false;
+      const d = calcDisplay, cur = d.value;
+      const s = d.selectionStart ?? cur.length, en = d.selectionEnd ?? cur.length;
+      if (/[+\-*/]/.test(v) && s === 0 && en === cur.length && cur) {
+        d.setSelectionRange(cur.length, cur.length);
+        return replaceCalcSelection(v);
+      }
+      const left = cur.slice(0, s), right = cur.slice(en);
+      const before = left.slice(-1), after = right.charAt(0);
+      if (/[+\-*/]/.test(v) && ((!left && s === en) || /[+\-*/]$/.test(before) || /^[+\-*/]/.test(after))) return;
+      if (v === '.' && left.split(/[+\-*/]/).pop().includes('.')) return;
+      replaceCalcSelection(v);
+    }
+    function calcBackspace(){
+      lastWasEquals = false;
+      const d = calcDisplay;
+      const s = d.selectionStart ?? d.value.length, en = d.selectionEnd ?? d.value.length;
+      if (s !== en) {
+        d.value = d.value.slice(0, s) + d.value.slice(en);
+        d.setSelectionRange(s, s);
+      } else if (s > 0) {
+        d.value = d.value.slice(0, s - 1) + d.value.slice(en);
+        d.setSelectionRange(s - 1, s - 1);
+      }
+    }
+    function calcClear(){
+      calcDisplay.value = '';
+      lastRepeat = null;
+      lastWasEquals = false;
+    }
+    function calculateExpression(expr){
+      const t = expr.match(/\d*\.?\d+|[+\-*/]/g) || [];
+      if (!t.length) return null;
+      const vals = [Number(t[0])], ops = [];
+      for (let i = 1; i < t.length; i += 2) {
+        ops.push(t[i]);
+        vals.push(Number(t[i + 1]));
+      }
+      for (let i = 0; i < ops.length;) {
+        if (ops[i] === '*' || ops[i] === '/') {
+          const v = ops[i] === '*' ? vals[i] * vals[i + 1] : vals[i] / vals[i + 1];
+          vals.splice(i, 2, v);
+          ops.splice(i, 1);
+        } else i++;
+      }
+      let total = vals[0];
+      ops.forEach((op, i) => total = op === '+' ? total + vals[i + 1] : total - vals[i + 1]);
+      return total;
+    }
+    function formatNum(n){
+      return Number.isInteger(n) ? String(n) : String(Math.round(n * 1e8) / 1e8);
+    }
+    function calcEquals(){
+      const d = calcDisplay;
+      let expr = d.value;
+      if (lastWasEquals && lastRepeat && /^-?\d*\.?\d+$/.test(expr)) {
+        expr = `${expr}${lastRepeat.op}${lastRepeat.operand}`;
+      }
+      if (!expr || !/^[0-9.+\-*/]+$/.test(expr) || /[+\-*/]$/.test(expr) || /^[+*/]/.test(expr) || /[+\-*/]{2,}/.test(expr)) return;
+      const tokens = expr.match(/\d*\.?\d+|[+\-*/]/g) || [];
+      const total = calculateExpression(expr);
+      if (total === null || !Number.isFinite(total)) return;
+      if (tokens.length >= 3) {
+        lastRepeat = { op: tokens[tokens.length - 2], operand: tokens[tokens.length - 1] };
+      }
+      const result = formatNum(total);
+      calcOperations.value += (calcOperations.value ? '\n' : '') + `${expr} = ${result}`;
+      calcOperations.scrollTop = calcOperations.scrollHeight;
+      d.value = result;
+      d.setSelectionRange(0, d.value.length);
+      lastWasEquals = true;
+    }
+    document.addEventListener('keydown', (e) => {
+      if (!calcFocused) return;
+      if (/^[0-9]$/.test(e.key) || ['+','-','*','/','.'].includes(e.key)) {
+        e.preventDefault();
+        calcPress(e.key);
+      } else if (e.key === 'Enter' || e.key === '=') {
+        e.preventDefault();
+        calcEquals();
+      } else if (e.key === 'Backspace') {
+        e.preventDefault();
+        calcBackspace();
+      } else if (e.key === 'Delete') {
+        e.preventDefault();
+        calcBackspace();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        calcClear();
+      }
+    });
+
+    // Calendar / 90 days ago
+    let ninetyDate = new Date(), calDate = new Date();
+    const ninetyDaysAgo = $('ninetyDaysAgo');
+    const calMonthLabel = $('calMonthLabel');
+    const calendarGrid = $('calendarGrid');
+    const calendarBackdrop = $('calendarBackdrop');
+    const calendarIcon = $('calendarIcon');
+    const calPrev = $('calPrev');
+    const calNext = $('calNext');
+
+    function setNinetyDaysAgo(){
+      const d = new Date();
+      d.setDate(d.getDate() - 90);
+      ninetyDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      calDate = new Date(ninetyDate);
+      ninetyDaysAgo.textContent = `${String(d.getMonth() + 1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}/${d.getFullYear()}`;
+    }
+    function sameDay(a, b){
+      return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    }
+    function showCalendar(){
+      calDate = new Date(ninetyDate.getFullYear(), ninetyDate.getMonth(), 1);
+      calendarBackdrop.classList.add('show');
+      renderCalendar();
+    }
+    function hideCalendar(){
+      calendarBackdrop.classList.remove('show');
+    }
+    function renderCalendar(){
+      const y = calDate.getFullYear(), m = calDate.getMonth();
+      calMonthLabel.textContent = calDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+      calendarGrid.innerHTML = '';
+      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
+        const e = document.createElement('div');
+        e.className = 'calendar-dow';
+        e.textContent = d;
+        calendarGrid.appendChild(e);
+      });
+      const first = new Date(y, m, 1).getDay();
+      const last = new Date(y, m + 1, 0).getDate();
+      const today = new Date();
+      for (let i = 0; i < first; i++) {
+        const e = document.createElement('div');
+        e.className = 'calendar-empty';
+        calendarGrid.appendChild(e);
+      }
+      for (let day = 1; day <= last; day++) {
+        const e = document.createElement('div');
+        const d = new Date(y, m, day);
+        e.className = 'calendar-day' + (sameDay(d, today) ? ' today' : '') + (sameDay(d, ninetyDate) ? ' ninety' : '');
+        e.textContent = day;
+        calendarGrid.appendChild(e);
+      }
+    }
+    calendarIcon.onclick = (e) => { e.stopPropagation(); showCalendar(); };
+    calendarBackdrop.onclick = hideCalendar;
+    calPrev.onclick = (e) => { e.stopPropagation(); calDate.setMonth(calDate.getMonth() - 1); renderCalendar(); };
+    calNext.onclick = (e) => { e.stopPropagation(); calDate.setMonth(calDate.getMonth() + 1); renderCalendar(); };
+
+    // Reference guide — EXPRESS LANES only, preselected
+    function cols(a, b, c, d){
+      return `<div class="popup-columns">` +
+        `<div><strong>${a}</strong><div>${b.map(x => x ? escapeAttr(x) : '<br>').join('<br>').replaceAll('<br><br><br>','<br><br>')}</div></div>` +
+        `<div><strong>${c}</strong><div>${d.map(x => x ? escapeAttr(x) : '<br>').join('<br>').replaceAll('<br><br><br>','<br><br>')}</div></div>` +
+        `</div>`;
+    }
+    const guides = {
+      BRIDGES: `<strong>BRIDGES</strong><div>1 - Antioch<br>2 - Richmond<br>3 - San Mateo/Hayward<br>4 - Dumbarton<br>5 - Oakland / Bay Bridge<br>6 - Carquinez<br>7 - Benicia<br>8 - Golden Gate</div>`,
+      V101: cols(
+        'V101/SR-85 Santa Clara North Express Lane',
+        ['1 - 85N','85 Connector SB','(Mountain View)','','2 - MBN','Moffett Blvd','(Mountain View)','','3 - SBN','N Shoreline Blvd','(Mountain View)','','4 - APN','Amphitheatre Pkwy','(Mountain View)','','5 - SAN','San Antonio Rd','(Palo Alto)','','6 - OEN','Oregon Exprsswy','(Palo Alto)','','7 - ERN','Embarcadero Rd','(Palo Alto)'],
+        'V101/SR-85 Santa Clara South Express Lane',
+        ['1 - OES','Oregon Expressway','(Palo Alto)','','2 - SAS','San Antonio Rd','(Palo Alto)','','3 - SBS','N Shoreline Blvd','(Mountain View)','','4 - MBS','Moffett Blvd','(Mountain View)','','5 - ESS','Ellis Street','(Mountain View)','','6 - 85S','85 Connector SB','(Mountain View)']
+      ),
+      S101: cols(
+        '101 San Mateo North Express Lane',
+        ['1 - MAN','Marsh Rd','(Menlo Park)','','2 - RAN','Ralston Ave','(Belmont)','','3 - SRN','NB SR 92','(San Mateo)','','4 - BRN','Broadway','(Burlingame)','','5 - ITN','NB I-380','(South San Francisco)'],
+        '101 San Mateo South Express Lane',
+        ['1 - BRS','Broadway','(Burlingame)','','2 - TRS','3rd Ave','(San Mateo)','','3 - RAS','Ralston Ave','(Belmont)','','4 - WOS','Woodside Rd','(Menlo Park)','','5 - EMS','Embarcadero Rd','(Palo Alto)']
+      ),
+      '237': cols(
+        '237 West Express Lane',
+        ['1 - CLW','Calaveras Blvd','(Milpitas)','','2 - ZRW','Zanker Rd','(San Jose)','','3 - FSW','N First St','(San Jose)','','4 - GAW','Great America Pkwy','(Santa Clara)'],
+        '237 East Express Lane',
+        ['1 - MTE','Mathilda Ave','(Sunnyvale)','','2 - LEE','Lawrence Express Way','(Santa Clara)','','3 - GAE','Great America Pkwy','(Santa Clara)','','4 - FSE','N First St','(San Jose)']
+      ),
+      A580: cols(
+        '580 West Express Lane',
+        ['1 - NFW','N First St','(Livermore)','','2 - LVW','North Livermore Ave','(Livermore)','','3 - IAW','Isabel Ave','(Livermore)','','4 - A2W','Airway Blvd','(Livermore)','','5 - FLW','Fallon Rd','(Dublin)','','6 - SNW','Santa Rita Rd','(Pleasanton)','','7 - HCW','Hacienda Dr','(Dublin)','','8 - SBW','San Ramon Rd','(Dublin)'],
+        '580 East Express Lane',
+        ['1 - A1E','Airway Blvd','(Livermore)','','2 - A2E','Airway Blvd','(Livermore)','','3 - IAE','Isabel Ave','(Livermore)','','4 - LVE','North Livermore Ave','(Livermore)','','5 - NFE','N First St','(Livermore)','','6 - VSE','Vasco Rd','(Livermore)','','7 - GRE','Greenville Rd','(Livermore)']
+      ),
+      A680: cols(
+        'A680 Sunol North Express Lane',
+        ['1 - MNN','NB Junction SR-238 (Mission Blvd)','(Fremont)','','2 - 84N','NB Junction SR-84 (Vallecitos Rd)','(Sunol)'],
+        'A680 Sunol South Express Lane',
+        ['1 - MNS','SB Junction SR-238 (Mission Blvd)','(Fremont)','','2 - MSS','SB Junction SR-262 (Mission Blvd)','(Fremont)','','3 - CAS','SB Junction SR-237','(Milpitas)']
+      ),
+      B680: cols(
+        'B680 North Contra Costa Express Lane',
+        ['1 - CCN','Crow Canyon Rd','(San Ramon)','','2 - LIN','Livorna Rd','(Alamo)'],
+        'B680 South Contra Costa Express Lane',
+        ['1 - MOS','Monument Blvd','(Concord)','','2 - SMS','South Main St','(Walnut Creek)','','3 - ECS','El Cerro Blvd','(Danville)','','4 - CCS','Crow Canyon Rd','(San Ramon)','','5 - ALS','Alcosta Blvd','(San Ramon)']
+      ),
+      '880': cols(
+        '880 North Express Lane',
+        ['1 - AUN','Auto Mall','(Fremont)','','2 - MON','Mowry Ave','(Fremont)','','3 - DEN','Decato Rd','(Union City)','','4 - WHN','Whipple Rd','(Union City)','','5 - HEN','Hesperian Blvd','(San Lorenzo / San Leandro)'],
+        '880 South Express Lane',
+        ['1 - WAS','Washington Ave','(San Leandro)','','2 - TES','Tennyson Rd','(Hayward)','','3 - ANS','Alvarado-Niles Rd','Thornton Ave','','5 - AUS','Auto Mall','(Fremont)','','6 - DXS','Dixon Landing','(Milpitas)']
+      ),
+      '80': cols(
+        'I-80 Solano West Express Lane',
+        ['1 - ALW','Alamo Dr','(Vacaville)','','2 - MCW','Manual Campos Pkwy','(Fairfield)','','3 - WTW','West Texas St','(Fairfield)','','4 - SWW','SR-12 Junction','(Fairfield/Cordelia)'],
+        'I-80 Solano East Express Lane',
+        ['1 - SUE','Suisun Pkwy','(Fairfield/Cordelia)','','2 - MCE','Manual Campos Pkwy','(Fairfield)','','3 - ALE','Alamo Dr','(Vacaville)','','4 - IFE','I-505 Junction','(Vacaville)']
+      )
+    };
+    const expressSubmenu = ['BRIDGES','V101','S101','237','A580','A680','B680','880','80'];
+
+    const primaryRef = $('primaryRef');
+    const refSubmenu = $('refSubmenu');
+    const popupBackdrop = $('popupBackdrop');
+    const popupBox = $('popupBox');
+
+    function showPopupContent(h){
+      popupBox.innerHTML = h;
+      popupBackdrop.classList.add('show');
+    }
+    function showPopup(k){
+      showPopupContent(guides[k] || `<strong>${k}</strong>`);
+    }
+    function hidePopup(){
+      popupBackdrop.classList.remove('show');
+    }
+
+    // Only one primary button (EXPRESS LANES), pre-active, submenu pre-shown
+    const expressBtn = makeBtn('EXPRESS LANES', 'ref-active', () => {});
+    primaryRef.appendChild(expressBtn);
+    expressSubmenu.forEach(k => {
+      refSubmenu.appendChild(makeBtn(k, '', () => showPopup(k)));
+    });
+    refSubmenu.classList.add('show');
+
+    document.addEventListener('click', (e) => {
+      const open = popupBackdrop.classList.contains('show');
+      if (open && !popupBox.contains(e.target) && !e.target.closest('.ref-wrap')) hidePopup();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { hidePopup(); hideCalendar(); }
+    });
+
+    // Auto-regenerate notes on input/change
+    root.addEventListener('input', (e) => {
+      if (!['output','calcOperations','calcDisplay'].includes(e.target.id)) generateNotes();
+    });
+    root.addEventListener('change', (e) => {
+      if (!['output','calcOperations','calcDisplay'].includes(e.target.id)) generateNotes();
+    });
+
+    // Expose handlers for inline use in dynamically-created rows
+    window.__csr = {
+      copyField, addRowFromButton, removeRow,
+      copyNotes, clearCall,
+      calcPress, calcClear, calcBackspace, calcEquals,
+      hidePopup, hideCalendar
+    };
+    window.copyField = copyField;
+    window.copyNotes = copyNotes;
+    window.clearCall = clearCall;
+    window.calcPress = calcPress;
+    window.calcClear = calcClear;
+    window.calcBackspace = calcBackspace;
+    window.calcEquals = calcEquals;
+    window.hidePopup = hidePopup;
+    window.hideCalendar = hideCalendar;
+
+    setNinetyDaysAgo();
+    generateNotes();
+  })();
+</script>
+
+</body>
+</html>
